@@ -1,0 +1,15 @@
+html {
+    height: 100%;
+}
+
+body {
+    overflow: hidden;
+    padding: 0px;
+    height: 100%;
+}
+
+.image-container {
+    max-height: 100%;
+    display: flex;
+    justify-content: center;
+}
