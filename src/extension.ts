@@ -143,7 +143,7 @@ function getPrompt() {
 	const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 	const formattedDate = date.toLocaleDateString([], { month: 'long', day: 'numeric' });
 	if (location) {
-		return `The location "${location}" at the time "${formattedDate}". There is a numeric clock in the foreground which reads the _exact_ text "${time}". Capture the ambiance and details of the scene, including the lighting, surroundings, and any distinctive elements of this place and time.`;
+		return `The location "${location}" at the time "${formattedDate}". There is a digital clock in the foreground which reads the _exact_ text "${time}". Capture the ambiance and details of the scene, including the lighting, surroundings, and any distinctive elements of this place and time.`;
 	} else {
 		return `A digital clock which reads "${time}".`;
 		// return `A scene at the time "${formattedDate}". There is a digital clock in the foreground which reads "${time}". Capture the ambiance and details of the scene, including the lighting, surroundings, and any distinctive elements of this time.`;
