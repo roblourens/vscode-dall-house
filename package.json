@@ -53,7 +53,7 @@
         {
           "type": "webview",
           "id": "dall-clock",
-          "name": "Dall-Clock"
+          "name": "Dall Clock"
         }
       ]
     },
