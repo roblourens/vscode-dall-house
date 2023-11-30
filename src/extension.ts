@@ -161,6 +161,7 @@ function getPrompt() {
 }
 
 const scenes = [
+	'A knolling-style photo of items stereotypically associated with {location}',
 	'A busy street scene in {location}',
 	'A cafe in {location}',
 	'A bar in {location}',
@@ -196,12 +197,12 @@ const artStyles = [
 
 const feels = [
 	'vaporwave',
-	'post-apocalyptic',
+	// 'post-apocalyptic',
 	'sci-fi',
 	'steampunk',
 	'memphis group',
 	'optimistic',
-	'gloomy',
+	// 'gloomy',
 	'utopian',
 	'dieselpunk',
 	'afrofuturism',
