@@ -21,7 +21,7 @@
       },
       {
         "command": "dall-clock.refresh-dummy",
-        "title": "Refresh",
+        "title": "Refreshing...",
         "icon": "$(sync~spin)",
         "enablement": "false"
       },
