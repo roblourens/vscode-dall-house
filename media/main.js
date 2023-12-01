@@ -4,7 +4,7 @@
         switch (message.type) {
             case 'setImage':
                 {
-                    document.querySelector('#image-container').innerHTML = `<img src="${message.imageUrl}" />`;
+                    document.querySelector('#image-container img').setAttribute('src', message.imageUrl);
                     break;
                 }
         }

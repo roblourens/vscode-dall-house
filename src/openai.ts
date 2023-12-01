@@ -1,17 +1,22 @@
-'use strict';
-
-import * as vscode from 'vscode';
+import * as crypto from 'crypto';
 import OpenAI from 'openai';
-// import axios from 'axios';
-// import * as fs from 'fs';
-// import * as os from 'os';
-// import * as path from 'path';
-// import * as crypto from 'crypto';
-// import * as https from 'https';
-// import sharp from 'sharp';
-// import { GitExtension } from './git';
+import * as os from 'os';
+import * as path from 'path';
+import * as vscode from 'vscode';
+import { downloadFile } from './utils';
 
-export async function getAiImage(extContext: vscode.ExtensionContext, imageGenPrompt: string): Promise<string> {
+export async function generateAndDownloadAiImage(extContext: vscode.ExtensionContext, imageGenPrompt: string): Promise<string> {
+    const randomFileName = crypto.randomBytes(20).toString('hex');
+    const tempFileWithoutExtension = path.join(os.tmpdir(), 'dall-clock', `${randomFileName}`);
+    const tmpFilePath = tempFileWithoutExtension + '.png';
+    console.log(tmpFilePath);
+
+    const resultUrl = await fetchAiImage(extContext, imageGenPrompt);
+    await downloadFile(resultUrl!, tmpFilePath);
+    return tmpFilePath;
+}
+
+async function fetchAiImage(extContext: vscode.ExtensionContext, imageGenPrompt: string): Promise<string> {
     const key = await getUserAiKey(extContext);
     if (!key) {
         throw new Error('Missing OpenAI API key');

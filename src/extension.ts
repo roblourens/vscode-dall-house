@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
-import { getAiImage } from './openai';
+import * as os from 'os';
+import { generateAndDownloadAiImage } from './openai';
 
 export function activate(context: vscode.ExtensionContext) {
 	const provider = new DallClockWebviewProvider(context);
@@ -12,7 +13,7 @@ export function activate(context: vscode.ExtensionContext) {
 	);
 }
 
-const refreshPeriod = 1000 * 60 * 3;
+const refreshPeriod = 1000 * 60 * 1;
 const refreshesBeforeWait = 5;
 
 class DallClockWebviewProvider implements vscode.WebviewViewProvider {
@@ -42,10 +43,12 @@ class DallClockWebviewProvider implements vscode.WebviewViewProvider {
 			enableScripts: true,
 
 			localResourceRoots: [
-				this._extensionContext.extensionUri
+				this._extensionContext.extensionUri,
+				vscode.Uri.file(os.tmpdir())
 			]
 		};
 		webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
+		// Listen to onDidOpenTextDocument, onDidChangeTextDocument, etc
 		this._register(this._view.onDidChangeVisibility(() => {
 			this._refreshCount = 0;
 			if (this._lastImage) {
@@ -94,10 +97,10 @@ class DallClockWebviewProvider implements vscode.WebviewViewProvider {
 			vscode.commands.executeCommand('setContext', 'dall-clock.refreshing', true);
 			const prompt = getPrompt();
 			this._outputChannel.appendLine(`Prompt: ${prompt}`);
-			const url = await getAiImage(this._extensionContext, prompt);
-			this._outputChannel.appendLine(`Result: ${url}`);
-			this._lastImage = url;
-			this.setImage(url);
+			const tmpPath = await generateAndDownloadAiImage(this._extensionContext, prompt);
+			this._outputChannel.appendLine(`Result: ${tmpPath}`);
+			this._lastImage = tmpPath;
+			this.setImage(tmpPath);
 			this._lastRefresh = now;
 			this._refreshCount++;
 			this._refreshTimer = setTimeout(() => this.refresh(), refreshPeriod);
@@ -108,12 +111,17 @@ class DallClockWebviewProvider implements vscode.WebviewViewProvider {
 	}
 
 	private setImage(url: string): void {
-		this._view!.webview.postMessage({ type: 'setImage', imageUrl: url });
+		const uri = vscode.Uri.file(url);
+		const webviewUri = this._view?.webview.asWebviewUri(uri);
+		if (webviewUri) {
+			this._view!.webview.postMessage({ type: 'setImage', imageUrl: webviewUri.toString() });
+		}
 	}
 
 	private _getHtmlForWebview(webview: vscode.Webview): string {
 		const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionContext.extensionUri, 'media', 'main.js'));
 		const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionContext.extensionUri, 'media', 'main.css'));
+		const imgUri = webview.asWebviewUri(vscode.Uri.file('/var/folders/tx/p0ycbfpj37786p760wwdg6y80000gn/T/dall-clock/a3dc84f165632423ef5399906c19c0a8dcfd48c8.png'));
 
 		const nonce = getNonce();
 		return `<!DOCTYPE html>
@@ -125,7 +133,9 @@ class DallClockWebviewProvider implements vscode.WebviewViewProvider {
 				<link href="${styleMainUri}" rel="stylesheet">
             </head>
             <body>
-                <div id="image-container"></div>
+                <div id="image-container">
+					<img nonce="${nonce}" src=${imgUri} />
+				</div>
 
 				<script nonce="${nonce}" src="${scriptUri}"></script>
             </body>
@@ -145,8 +155,12 @@ function getNonce() {
 function getPrompt() {
 	const location = vscode.workspace.getConfiguration('dall-clock').get('location', 'Seattle, WA');
 	const date = new Date();
-	const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-	const formattedDate = date.toLocaleDateString([], { month: 'long', day: 'numeric' });
+	const includeAmPm = Math.random() < 0.5;
+	let time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+	if (!includeAmPm) {
+		time = time.replace(/\s*(am|pm)\s*/i, '');
+	}
+
 	const timeOfDay = getTimeOfDay(date);
 	const words = getWordsPart()
 		.replace('{time}', `"${time}"`)
