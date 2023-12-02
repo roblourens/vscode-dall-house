@@ -5,18 +5,19 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import { downloadFile } from './utils';
 
-export async function generateAndDownloadAiImage(extContext: vscode.ExtensionContext, imageGenPrompt: string): Promise<string> {
+export async function generateAndDownloadAiImage(extContext: vscode.ExtensionContext, imageGenPrompt: string, outputChannel: vscode.OutputChannel): Promise<string> {
     const randomFileName = crypto.randomBytes(20).toString('hex');
     const tempFileWithoutExtension = path.join(os.tmpdir(), 'dall-clock', `${randomFileName}`);
     const tmpFilePath = tempFileWithoutExtension + '.png';
     console.log(tmpFilePath);
 
-    const resultUrl = await fetchAiImage(extContext, imageGenPrompt);
-    await downloadFile(resultUrl!, tmpFilePath);
+    const result = await fetchAiImage(extContext, imageGenPrompt);
+    outputChannel.appendLine('Revised prompt: ' + result.revised_prompt);
+    await downloadFile(result.url!, tmpFilePath);
     return tmpFilePath;
 }
 
-async function fetchAiImage(extContext: vscode.ExtensionContext, imageGenPrompt: string): Promise<string> {
+async function fetchAiImage(extContext: vscode.ExtensionContext, imageGenPrompt: string): Promise<OpenAI.Image> {
     const key = await getUserAiKey(extContext);
     if (!key) {
         throw new Error('Missing OpenAI API key');
@@ -25,13 +26,13 @@ async function fetchAiImage(extContext: vscode.ExtensionContext, imageGenPrompt:
     const openai = new OpenAI({ apiKey: key });
     const imageGen = await openai.images.generate({
         prompt: imageGenPrompt,
-        model: "dall-e-3",
+        model: 'dall-e-3',
         n: 1,
         size: '1024x1024',
-        quality: "standard",
+        // style: 'natural',
+        quality: 'hd',
     });
-    const resultUrl = imageGen.data[0].url!;
-    return resultUrl;
+    return imageGen.data[0]!;
 }
 
 const keyName = 'openai.aiKey';

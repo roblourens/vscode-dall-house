@@ -14,7 +14,7 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 const refreshPeriod = 1000 * 60 * 1;
-const refreshesBeforeWait = 5;
+const refreshesBeforeWait = 3;
 
 class DallClockWebviewProvider implements vscode.WebviewViewProvider {
 	private _view: vscode.WebviewView | undefined;
@@ -29,7 +29,7 @@ class DallClockWebviewProvider implements vscode.WebviewViewProvider {
 	constructor(
 		private readonly _extensionContext: vscode.ExtensionContext,
 	) {
-		this._outputChannel = vscode.window.createOutputChannel('Dall Clock', { log: true });
+		this._outputChannel = vscode.window.createOutputChannel('Dall Clock Log', { log: true });
 	}
 
 	private _register(disposable: vscode.Disposable) {
@@ -48,16 +48,32 @@ class DallClockWebviewProvider implements vscode.WebviewViewProvider {
 			]
 		};
 		webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
-		// Listen to onDidOpenTextDocument, onDidChangeTextDocument, etc
+
 		this._register(this._view.onDidChangeVisibility(() => {
 			this._refreshCount = 0;
 			if (this._lastImage) {
 				// Webview is unloaded when we switch away?
-				this.setImage(this._lastImage);
+				this.loadImageInWebview(this._lastImage);
 			}
 
 			this.refresh();
 		}));
+
+		this._register(vscode.workspace.onDidChangeTextDocument(e => {
+			if (e.document.uri.scheme !== 'output') {
+				this._refreshCount = 0;
+			}
+		}));
+		this._register(vscode.window.onDidChangeActiveTextEditor(() => {
+			this._refreshCount = 0;
+		}));
+
+		// Initialize with lastImage from globalState
+		const last = this._extensionContext.globalState.get<string>('lastImage');
+		if (last) {
+			this.loadImageInWebview(last);
+		}
+
 		this.refresh();
 	}
 
@@ -97,10 +113,11 @@ class DallClockWebviewProvider implements vscode.WebviewViewProvider {
 			vscode.commands.executeCommand('setContext', 'dall-clock.refreshing', true);
 			const prompt = getPrompt();
 			this._outputChannel.appendLine(`Prompt: ${prompt}`);
-			const tmpPath = await generateAndDownloadAiImage(this._extensionContext, prompt);
+			const tmpPath = await generateAndDownloadAiImage(this._extensionContext, prompt, this._outputChannel);
 			this._outputChannel.appendLine(`Result: ${tmpPath}`);
 			this._lastImage = tmpPath;
-			this.setImage(tmpPath);
+			this._extensionContext.globalState.update('lastImage', tmpPath);
+			this.loadImageInWebview(tmpPath);
 			this._lastRefresh = now;
 			this._refreshCount++;
 			this._refreshTimer = setTimeout(() => this.refresh(), refreshPeriod);
@@ -110,7 +127,7 @@ class DallClockWebviewProvider implements vscode.WebviewViewProvider {
 		}
 	}
 
-	private setImage(url: string): void {
+	private loadImageInWebview(url: string): void {
 		const uri = vscode.Uri.file(url);
 		const webviewUri = this._view?.webview.asWebviewUri(uri);
 		if (webviewUri) {
@@ -156,7 +173,7 @@ function getPrompt() {
 	const location = vscode.workspace.getConfiguration('dall-clock').get('location', 'Seattle, WA');
 	const date = new Date();
 	const includeAmPm = Math.random() < 0.5;
-	let time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+	let time = date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 	if (!includeAmPm) {
 		time = time.replace(/\s*(am|pm)\s*/i, '');
 	}
@@ -167,7 +184,7 @@ function getPrompt() {
 		.replace('{location}', `"${location}"`);
 	const scene = getScenePart().replace('{location}', `"${location}"`);
 	if (location) {
-		return `${scene} at ${timeOfDay}. ${words} ${getArtStyleAndFeelPart()}`;
+		return `${scene} in ${timeOfDay}. ${words} ${getArtStyleAndFeelPart()}`;
 	} else {
 		return `A digital clock which reads "${time}".`;
 		// return `A scene at the time "${formattedDate}". There is a digital clock in the foreground which reads "${time}". Capture the ambiance and details of the scene, including the lighting, surroundings, and any distinctive elements of this time.`;
@@ -206,6 +223,8 @@ const artStyles = [
 	'tilt-shift photography',
 	'psychedlic art',
 	'ukiyo-e',
+	'butter sculpture',
+	'legos',
 	'',
 ];
 
@@ -221,6 +240,8 @@ const feels = [
 	'dieselpunk',
 	'afrofuturism',
 	'cyberpunk',
+	'realistic',
+	'hyper-realistic',
 	''
 ];
 

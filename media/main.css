@@ -13,3 +13,7 @@ body {
     display: flex;
     justify-content: center;
 }
+
+#image-container img {
+    object-fit: contain;
+}
