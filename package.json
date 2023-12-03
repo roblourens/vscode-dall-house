@@ -10,6 +10,7 @@
   "categories": [
     "Other"
   ],
+  "extensionKind": ["ui"],
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {

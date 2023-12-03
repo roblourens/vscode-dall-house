@@ -12,7 +12,7 @@ export async function generateAndDownloadAiImage(extContext: vscode.ExtensionCon
     console.log(tmpFilePath);
 
     const result = await fetchAiImage(extContext, imageGenPrompt);
-    outputChannel.appendLine('Revised prompt: ' + result.revised_prompt);
+    outputChannel.appendLine('    Revised prompt: ' + result.revised_prompt);
     await downloadFile(result.url!, tmpFilePath);
     return tmpFilePath;
 }

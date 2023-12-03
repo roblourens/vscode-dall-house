@@ -62,19 +62,20 @@ class DallClockWebviewProvider implements vscode.WebviewViewProvider {
 		this._register(vscode.workspace.onDidChangeTextDocument(e => {
 			if (e.document.uri.scheme !== 'output') {
 				this._refreshCount = 0;
+				this.refresh();
 			}
 		}));
 		this._register(vscode.window.onDidChangeActiveTextEditor(() => {
 			this._refreshCount = 0;
+			this.refresh();
 		}));
 
-		// Initialize with lastImage from globalState
+		// Initialize with lastImage from globalState.
+		// Don't refresh initially. Require the user to start using vscode (listen to text changes) or to click the refresh button.
 		const last = this._extensionContext.globalState.get<string>('lastImage');
 		if (last) {
 			this.loadImageInWebview(last);
 		}
-
-		this.refresh();
 	}
 
 	open() {
@@ -114,7 +115,7 @@ class DallClockWebviewProvider implements vscode.WebviewViewProvider {
 			const prompt = getPrompt();
 			this._outputChannel.appendLine(`Prompt: ${prompt}`);
 			const tmpPath = await generateAndDownloadAiImage(this._extensionContext, prompt, this._outputChannel);
-			this._outputChannel.appendLine(`Result: ${tmpPath}`);
+			this._outputChannel.appendLine(`    Result: ${tmpPath}`);
 			this._lastImage = tmpPath;
 			this._extensionContext.globalState.update('lastImage', tmpPath);
 			this.loadImageInWebview(tmpPath);
@@ -193,13 +194,15 @@ function getPrompt() {
 
 const scenes = [
 	'A knolling-style photo of items stereotypically associated with {location}',
-	'A busy street scene in {location}',
-	'A cafe in {location}',
-	'A bar in {location}',
+	'A busy bustling street scene in {location}',
+	'A cute and cozy cafe full of people in {location}. Some people are sipping lattes, some working on laptops, some chatting with friends, or writing in journals',
+	'A friendly welcoming neighborhood bar in {location}',
 	'A band performing on stage in {location}',
-	'A skyline view of {location}',
+	'An office full of busy programmers in {location}',
+	'An inspiring skyline view of {location}',
 	'A view of a famous landmark in {location}',
 	'The typical food eaten in {location}',
+	'A beautiful and awe-inspiring scene of the nature, plants, and animals that are found in {location}',
 	'{location}',
 ];
 
@@ -223,7 +226,7 @@ const artStyles = [
 	'tilt-shift photography',
 	'psychedlic art',
 	'ukiyo-e',
-	'butter sculpture',
+	'butter sculpture on display',
 	'legos',
 	'',
 ];
@@ -260,7 +263,7 @@ const timeWordsOptions = [
 	'There is a digital clock in the foreground which shows the _exact_ text {time} and no other text.',
 	'There is a nixie tube clock in the foreground which shows the _exact_ text {time} and no other text.',
 	'The text {time} is overlayed on the image in large font.',
-	'Some object in the scene has the exact text {time} written on it in large font.',
+	'Some object in the scene has the exact text {time} written on it in large font.', // This should be more specific
 	'A person from {location} is holding a sign with the exact text {time} written on it in large font.',
 	'There is a large sign in the foreground which shows the exact text {time} and no other text.',
 ];
