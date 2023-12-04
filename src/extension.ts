@@ -180,12 +180,12 @@ function getPrompt() {
 	}
 
 	const timeOfDay = getTimeOfDay(date);
-	const words = getWordsPart()
+	const timeWords = getTimeWordsPart()
 		.replace('{time}', `"${time}"`)
 		.replace('{location}', `"${location}"`);
 	const scene = getScenePart().replace('{location}', `"${location}"`);
 	if (location) {
-		return `${scene} in ${timeOfDay}. ${words} ${getArtStyleAndFeelPart()}`;
+		return `${timeWords} This is just text, it does not represent a time. The text is obvious and readable. There is no other text anywhere in the scene. ${scene} in ${timeOfDay}. ${getArtStyleAndFeelPart()}`;
 	} else {
 		return `A digital clock which reads "${time}".`;
 		// return `A scene at the time "${formattedDate}". There is a digital clock in the foreground which reads "${time}". Capture the ambiance and details of the scene, including the lighting, surroundings, and any distinctive elements of this time.`;
@@ -194,11 +194,11 @@ function getPrompt() {
 
 const scenes = [
 	'A knolling-style photo of items stereotypically associated with {location}',
-	'A busy bustling street scene in {location}',
+	'A busy bustling sidewalk scene in {location}. People are walking or biking. There are no cars',
 	'A cute and cozy cafe full of people in {location}. Some people are sipping lattes, some working on laptops, some chatting with friends, or writing in journals',
 	'A friendly welcoming neighborhood bar in {location}',
 	'A band performing on stage in {location}',
-	'An office full of busy programmers in {location}',
+	'An office full of busy programmers using VS Code in {location}',
 	'An inspiring skyline view of {location}',
 	'A view of a famous landmark in {location}',
 	'The typical food eaten in {location}',
@@ -262,13 +262,13 @@ function getArtStyleAndFeelPart(): string {
 const timeWordsOptions = [
 	'There is a digital clock in the foreground which shows the _exact_ text {time} and no other text.',
 	'There is a nixie tube clock in the foreground which shows the _exact_ text {time} and no other text.',
-	'The text {time} is overlayed on the image in large font.',
+	'The text {time} is overlayed on the image in large font. There is no other text.',
 	'Some object in the scene has the exact text {time} written on it in large font.', // This should be more specific
 	'A person from {location} is holding a sign with the exact text {time} written on it in large font.',
 	'There is a large sign in the foreground which shows the exact text {time} and no other text.',
 ];
 
-function getWordsPart(): string {
+function getTimeWordsPart(): string {
 	const randomIndex = Math.floor(Math.random() * timeWordsOptions.length);
 	return timeWordsOptions[randomIndex];
 }
