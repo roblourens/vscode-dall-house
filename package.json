@@ -1,6 +1,6 @@
 {
-  "name": "dall-clock",
-  "displayName": "DALL·clock",
+  "name": "vscode-dall-toys",
+  "displayName": "DALL·Clock",
   "publisher": "roblourens",
   "description": "",
   "version": "0.0.1",
@@ -13,14 +13,18 @@
   "extensionKind": [
     "ui"
   ],
-  "activationEvents": [],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/roblourens/dall-clock.git"
+  },
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
         "command": "dall-clock.refresh",
         "title": "Refresh",
-        "icon": "$(sync)"
+        "icon": "$(sync)",
+        "category": "DALL·Clock"
       },
       {
         "command": "dall-clock.refresh-dummy",
@@ -31,9 +35,20 @@
       {
         "command": "dall-clock.open",
         "title": "Open full picture"
+      },
+      {
+        "command": "dall-toys.clearKey",
+        "title": "Clear API Key",
+        "category": "DALL·Clock"
       }
     ],
     "menus": {
+      "commandPalette": [
+        {
+          "command": "dall-clock.open",
+          "when": "false"
+        }
+      ],
       "view/title": [
         {
           "command": "dall-clock.refresh",

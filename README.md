@@ -1,71 +1,24 @@
-# dall-clock README
+# DALL · Clock
 
-This is the README for your extension "dall-clock". After writing up a brief description, we recommend including the following sections.
+This is the extension for people who want to know what time it is while using VS Code, and also look at interesting pictures.
 
-## Features
+1. Install extension
+2. Enter your own OpenAI API key when prompted
+   a. Run "Clear API Key" if you need to change it
+3. Find out what time it is!
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+Be sure to configure `dall-clock.location` for maximum personalization. DALL·Clock will generate images based in that location.
 
-For example if there is an image subfolder under your extension project workspace:
+Also be sure to configure your API spending limit. DALL·Clock tries to avoid making too many API requests. It will only update the image when its view is visible, and only when you have been opening or editing files- ie when you are actively using the VS Code window. But you are responsible for checking your API usage.
 
-\!\[feature X\]\(images/feature-x.png\)
+## Examples
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+![](./samples/1.png)
+![](./samples/3.png)
+![](./samples/11.png)
+![](./samples/5.png)
+![](./samples/10.png)
+![](./samples/6.png)
+![](./samples/7.png)
+![](./samples/8.png)
+![](./samples/9.png)

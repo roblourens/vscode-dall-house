@@ -99,3 +99,7 @@ async function getUserAiKey(context: vscode.ExtensionContext): Promise<string | 
         }
     }
 }
+
+export function clearUserAiKey(context: vscode.ExtensionContext) {
+    context.secrets.delete(keyName);
+}
