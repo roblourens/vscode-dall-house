@@ -114,13 +114,13 @@ class DallClockWebviewProvider implements vscode.WebviewViewProvider {
 			this._isRefreshing = true;
 			vscode.commands.executeCommand('setContext', 'dall-clock.refreshing', true);
 			const prompt = getPrompt();
-			this._outputChannel.appendLine(`*Prompt: ${prompt}`);
-			const quality = vscode.workspace.getConfiguration('dall-clock').get('quality') as OpenAI.ImageGenerateParams['quality'];
-			const size = vscode.workspace.getConfiguration('dall-clock').get('size') as OpenAI.ImageGenerateParams['size'];
-			const style = vscode.workspace.getConfiguration('dall-clock').get('style') as OpenAI.ImageGenerateParams['style'];
+			this._outputChannel.appendLine(`*Prompt: ${prompt.fullPrompt}`);
+			const quality = vscode.workspace.getConfiguration('dall-clock').get<OpenAI.ImageGenerateParams['quality']>('quality');
+			const size = vscode.workspace.getConfiguration('dall-clock').get<OpenAI.ImageGenerateParams['size']>('size');
+			const style = vscode.workspace.getConfiguration('dall-clock').get<OpenAI.ImageGenerateParams['style']>('style');
+			const retryCount = vscode.workspace.getConfiguration('dall-clock').get<number>('retryCount', 3);
 
-			const result = await generateAndDownloadAiImage(this._extensionContext, prompt, this._outputChannel, { quality, size, style });
-			this._outputChannel.appendLine(`    URL: ${result.image.url}`);
+			const result = await generateAndDownloadAiImage(this._extensionContext, prompt.fullPrompt, prompt.requiredString, retryCount, this._outputChannel, { quality, size, style });
 			this._outputChannel.appendLine(`    Saved: ${result.localPath}`);
 			this._lastImage = result.localPath;
 			this._extensionContext.globalState.update('lastImage', result.localPath);
@@ -179,13 +179,15 @@ function getNonce() {
 	return text;
 }
 
-function getPrompt() {
+function getPrompt(): { fullPrompt: string, requiredString: string } {
 	const location = vscode.workspace.getConfiguration('dall-clock').get('location', 'Seattle, WA');
 	const date = new Date();
+	date.setSeconds(date.getSeconds() + 30); // Add 30 seconds because it takes so damn long to update the image
 	const includeAmPm = Math.random() < 0.5;
 	let time = date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+	const timeWithoutAmPm = time.replace(/\s*(am|pm)\s*/i, '');
 	if (!includeAmPm) {
-		time = time.replace(/\s*(am|pm)\s*/i, '');
+		time = timeWithoutAmPm;
 	}
 
 	const timeOfDay = getTimeOfDay(date);
@@ -194,10 +196,15 @@ function getPrompt() {
 		.replace('{location}', `"${location}"`);
 	const scene = getScenePart().replace('{location}', `"${location}"`);
 	if (location) {
-		return `${timeWords} This is just text, it does not represent a time. The text is obvious and readable. There is no other text anywhere in the scene. ${scene} in ${timeOfDay}. ${getArtStyleAndFeelPart()}`;
+		return {
+			fullPrompt: `${timeWords} This is just text, it does not represent a time. The text is obvious and readable. There is no other text anywhere in the scene. ${scene} in ${timeOfDay}. ${getArtStyleAndFeelPart()}`,
+			requiredString: timeWithoutAmPm
+		};
 	} else {
-		return `A digital clock which reads "${time}".`;
-		// return `A scene at the time "${formattedDate}". There is a digital clock in the foreground which reads "${time}". Capture the ambiance and details of the scene, including the lighting, surroundings, and any distinctive elements of this time.`;
+		return {
+			fullPrompt: `A digital clock which reads "${time}".`,
+			requiredString: timeWithoutAmPm
+		};
 	}
 }
 
@@ -212,6 +219,7 @@ const scenes = [
 	'A view of a famous landmark in {location}',
 	'The typical food eaten in {location}',
 	'A beautiful and awe-inspiring scene of the nature, plants, and animals that are found in {location}',
+	'An image of a futuristic version of {location}, inspired by Blade Runner',
 	'{location}',
 ];
 

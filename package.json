@@ -94,6 +94,11 @@
           ],
           "description": "The style used in the request to the OpenAI API. \"vivid\" causes the model to lean towards generating hyper-real and dramatic images. \"natural\" causes the model to produce more natural, less hyper-real looking images.",
           "default": "vivid"
+        },
+        "dall-clock.retryCount": {
+          "type": "number",
+          "description": "Limit the number of times that generating one image will be retried until one is generated with the correct text.",
+          "default": 3
         }
       }
     }
