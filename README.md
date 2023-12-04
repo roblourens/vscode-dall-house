@@ -1,5 +1,9 @@
 # DALL · Clock
 
+<p align="center">
+  <img src="https://github.com/roblourens/vscode-dall-clock/blob/bc022c7d8155d638dc29767e07e2a341cdc99385/samples/13.png?raw=true">
+</p>
+
 This is the extension for people who want to know what time it is while using VS Code, and also look at interesting pictures.
 
 1. Install extension
@@ -13,12 +17,33 @@ Also be sure to configure your API spending limit. DALL·Clock tries to avoid ma
 
 ## Examples
 
-![](./samples/1.png)
-![](./samples/3.png)
-![](./samples/11.png)
-![](./samples/5.png)
-![](./samples/10.png)
-![](./samples/6.png)
-![](./samples/7.png)
-![](./samples/8.png)
-![](./samples/9.png)
+<p align="center">
+  <img src="https://github.com/roblourens/vscode-dall-clock/blob/bc022c7d8155d638dc29767e07e2a341cdc99385/samples/12.png?raw=true">
+</p>
+<p align="center">
+  <img src="https://github.com/roblourens/vscode-dall-clock/blob/bc022c7d8155d638dc29767e07e2a341cdc99385/samples/1.png?raw=true">
+</p>
+<p align="center">
+   <img src="https://github.com/roblourens/vscode-dall-clock/blob/bc022c7d8155d638dc29767e07e2a341cdc99385/samples/3.png?raw=true">
+</p>
+<p align="center">
+   <img src="https://github.com/roblourens/vscode-dall-clock/blob/bc022c7d8155d638dc29767e07e2a341cdc99385/samples/11.png?raw=true">
+</p>
+<p align="center">
+   <img src="https://github.com/roblourens/vscode-dall-clock/blob/bc022c7d8155d638dc29767e07e2a341cdc99385/samples/5.png?raw=true">
+</p>
+<p align="center">
+   <img src="https://github.com/roblourens/vscode-dall-clock/blob/bc022c7d8155d638dc29767e07e2a341cdc99385/samples/10.png?raw=true">
+</p>
+<p align="center">
+   <img src="https://github.com/roblourens/vscode-dall-clock/blob/bc022c7d8155d638dc29767e07e2a341cdc99385/samples/6.png?raw=true">
+</p>
+<p align="center">
+   <img src="https://github.com/roblourens/vscode-dall-clock/blob/bc022c7d8155d638dc29767e07e2a341cdc99385/samples/7.png?raw=true">
+</p>
+<p align="center">
+   <img src="https://github.com/roblourens/vscode-dall-clock/blob/bc022c7d8155d638dc29767e07e2a341cdc99385/samples/8.png?raw=true">
+</p>
+<p align="center">
+   <img src="https://github.com/roblourens/vscode-dall-clock/blob/bc022c7d8155d638dc29767e07e2a341cdc99385/samples/9.png?raw=true">
+</p>

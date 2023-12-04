@@ -2,7 +2,7 @@
   "name": "vscode-dall-toys",
   "displayName": "DALL·Clock",
   "publisher": "roblourens",
-  "description": "",
+  "description": "An extension for the sophisticated VS Code user who wants to know the time.",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.84.0"
