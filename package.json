@@ -3,19 +3,24 @@
   "displayName": "DALL·Clock",
   "publisher": "roblourens",
   "description": "An extension for the sophisticated VS Code user who wants to know the time.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "engines": {
     "vscode": "^1.84.0"
   },
+  "activationEvents": [],
   "categories": [
     "Other"
   ],
   "extensionKind": [
     "ui"
   ],
+  "icon": "icon.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/roblourens/dall-clock.git"
+  },
+  "bugs": {
+    "url": "https://github.com/roblourens/dall-clock/issues"
   },
   "main": "./dist/extension.js",
   "contributes": {
