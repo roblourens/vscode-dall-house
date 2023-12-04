@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as os from 'os';
 import { generateAndDownloadAiImage } from './openai';
+import OpenAI from 'openai';
 
 export function activate(context: vscode.ExtensionContext) {
 	const provider = new DallClockWebviewProvider(context);
@@ -82,10 +83,10 @@ class DallClockWebviewProvider implements vscode.WebviewViewProvider {
 		if (!this._lastImage) {
 			return;
 		}
-		
+
 		vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(this._lastImage));
 	}
-	
+
 	async refresh(force?: boolean) {
 		if (!this._view?.visible || this._isRefreshing) {
 			return;
@@ -113,15 +114,23 @@ class DallClockWebviewProvider implements vscode.WebviewViewProvider {
 			this._isRefreshing = true;
 			vscode.commands.executeCommand('setContext', 'dall-clock.refreshing', true);
 			const prompt = getPrompt();
-			this._outputChannel.appendLine(`Prompt: ${prompt}`);
-			const tmpPath = await generateAndDownloadAiImage(this._extensionContext, prompt, this._outputChannel);
-			this._outputChannel.appendLine(`    Result: ${tmpPath}`);
-			this._lastImage = tmpPath;
-			this._extensionContext.globalState.update('lastImage', tmpPath);
-			this.loadImageInWebview(tmpPath);
+			this._outputChannel.appendLine(`*Prompt: ${prompt}`);
+			const quality = vscode.workspace.getConfiguration('dall-clock').get('quality') as OpenAI.ImageGenerateParams['quality'];
+			const size = vscode.workspace.getConfiguration('dall-clock').get('size') as OpenAI.ImageGenerateParams['size'];
+			const style = vscode.workspace.getConfiguration('dall-clock').get('style') as OpenAI.ImageGenerateParams['style'];
+
+			const result = await generateAndDownloadAiImage(this._extensionContext, prompt, this._outputChannel, { quality, size, style });
+			this._outputChannel.appendLine(`    URL: ${result.image.url}`);
+			this._outputChannel.appendLine(`    Saved: ${result.localPath}`);
+			this._lastImage = result.localPath;
+			this._extensionContext.globalState.update('lastImage', result.localPath);
+			this.loadImageInWebview(result.localPath);
 			this._lastRefresh = now;
 			this._refreshCount++;
 			this._refreshTimer = setTimeout(() => this.refresh(), refreshPeriod);
+		} catch (err) {
+			this._outputChannel.appendLine(`    Error: ${err}`);
+			throw err;
 		} finally {
 			this._isRefreshing = false;
 			vscode.commands.executeCommand('setContext', 'dall-clock.refreshing', false);
@@ -253,8 +262,8 @@ function getArtStyleAndFeelPart(): string {
 	const feel = feels[Math.floor(Math.random() * feels.length)];
 	if (artStyle) {
 		return feel ? `Art style: ${artStyle} with a ${feel} feel.`
-		: `Art style: ${artStyle}.`;
-	} 
+			: `Art style: ${artStyle}.`;
+	}
 
 	return feel ? `Has a ${feel} feel.` : ``;
 }

@@ -10,7 +10,9 @@
   "categories": [
     "Other"
   ],
-  "extensionKind": ["ui"],
+  "extensionKind": [
+    "ui"
+  ],
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
@@ -64,6 +66,34 @@
           "type": "string",
           "description": "A free-form description of your location, like a city name.",
           "default": "Seattle, WA"
+        },
+        "dall-clock.quality": {
+          "type": "string",
+          "enum": [
+            "hd",
+            "standard"
+          ],
+          "description": "The quality used in the request to the OpenAI API. \"hd\" is more expensive and slower but results in higher quality images.",
+          "default": "standard"
+        },
+        "dall-clock.size": {
+          "type": "string",
+          "enum": [
+            "1024x1024",
+            "1024x1792",
+            "1792x1024"
+          ],
+          "description": "The size used in the request to the OpenAI API. \"1024x1024\" is cheapest and fastest.",
+          "default": "1024x1024"
+        },
+        "dall-clock.style": {
+          "type": "string",
+          "enum": [
+            "vivid",
+            "natural"
+          ],
+          "description": "The style used in the request to the OpenAI API. \"vivid\" causes the model to lean towards generating hyper-real and dramatic images. \"natural\" causes the model to produce more natural, less hyper-real looking images.",
+          "default": "vivid"
         }
       }
     }
