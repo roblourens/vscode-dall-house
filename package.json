@@ -1,8 +1,8 @@
 {
   "name": "vscode-dall-toys",
-  "displayName": "DALL · Clock",
+  "displayName": "DALL · House",
   "publisher": "roblourens",
-  "description": "An extension for the sophisticated VS Code user who wants to know the time.",
+  "description": "Play with DALL-E in VS Code",
   "version": "0.0.2",
   "engines": {
     "vscode": "^1.84.0"
@@ -77,6 +77,13 @@
           "type": "webview",
           "id": "dall-clock",
           "name": "Dall Clock"
+        }
+      ],
+      "scm": [
+        {
+          "type": "webview",
+          "id": "dall-git-branch",
+          "name": "Branch Critter"
         }
       ]
     },
