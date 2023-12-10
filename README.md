@@ -47,5 +47,8 @@ See the generated prompts in the "Dall Clock Log" output channel.
    <img src="https://github.com/roblourens/vscode-dall-clock/blob/bc022c7d8155d638dc29767e07e2a341cdc99385/samples/8.png?raw=true">
 </p>
 <p align="center">
+   <img src="https://github.com/roblourens/vscode-dall-clock/blob/bc022c7d8155d638dc29767e07e2a341cdc99385/samples/14.png?raw=true">
+</p>
+<p align="center">
    <img src="https://github.com/roblourens/vscode-dall-clock/blob/bc022c7d8155d638dc29767e07e2a341cdc99385/samples/9.png?raw=true">
 </p>
