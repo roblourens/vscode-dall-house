@@ -1,6 +1,6 @@
 {
   "name": "vscode-dall-toys",
-  "displayName": "DALL·Clock",
+  "displayName": "DALL · Clock",
   "publisher": "roblourens",
   "description": "An extension for the sophisticated VS Code user who wants to know the time.",
   "version": "0.0.2",
@@ -119,6 +119,11 @@
           "type": "number",
           "description": "Limit the number of times that generating one image will be retried until one is generated with the correct text.",
           "default": 3
+        },
+        "dall-clock.updatePeriod": {
+          "type": "number",
+          "description": "The number of minutes between updates.",
+          "default": 1
         }
       }
     }

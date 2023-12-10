@@ -16,8 +16,7 @@ export function activate(context: vscode.ExtensionContext) {
     );
 }
 
-const refreshPeriod = 1000 * 60 * 1;
-const refreshesBeforeWait = 3;
+const refreshesBeforeWait = 1;
 
 class DallClockWebviewProvider implements vscode.WebviewViewProvider {
     private _view: vscode.WebviewView | undefined;
@@ -95,6 +94,7 @@ class DallClockWebviewProvider implements vscode.WebviewViewProvider {
         }
 
         const now = Date.now();
+        const refreshPeriod = 1000 * 60 * vscode.workspace.getConfiguration('dall-clock').get<number>('updatePeriod', 1);
         if (!force && now - this._lastRefresh < refreshPeriod) {
             return;
         }
@@ -199,7 +199,7 @@ function getPrompt(): { fullPrompt: string, requiredString: string } {
     const scene = getScenePart().replace('{location}', `"${location}"`);
     if (location) {
         return {
-            fullPrompt: `${timeWords} This is just text, it does not represent a time. The text is obvious and readable. There is no other text anywhere in the scene. ${scene} in ${timeOfDay}. ${getArtStyleAndFeelPart()}`,
+            fullPrompt: `${timeWords} This is just text, it does not represent a time. The text is obvious and readable. There is no other text anywhere in the scene. ${scene} It is ${timeOfDay}. ${getArtStyleAndFeelPart()}`,
             requiredString: timeWithoutAmPm
         };
     } else {
@@ -211,18 +211,18 @@ function getPrompt(): { fullPrompt: string, requiredString: string } {
 }
 
 const scenes = [
-    'A knolling-style photo of items stereotypically associated with {location}',
-    'A busy bustling sidewalk scene in {location}. People are walking or biking. There are no cars',
-    'A cute and cozy cafe full of people in {location}. Some people are sipping lattes, some working on laptops, some chatting with friends, or writing in journals',
-    'A friendly welcoming neighborhood bar in {location}',
-    'A band performing on stage in {location}',
-    'An office full of busy programmers using VS Code in {location}',
-    'An inspiring skyline view of {location}',
-    'A view of a famous landmark in {location}',
-    'The typical food eaten in {location}',
-    'A beautiful and awe-inspiring scene of the nature, plants, and animals that are found in {location}',
-    'An image of a futuristic version of {location}, inspired by Blade Runner',
-    '{location}',
+    'A knolling-style photo of items stereotypically associated with {location}.',
+    'A busy bustling sidewalk scene in {location}. People are walking or biking. There are no cars.',
+    'A cute and cozy cafe full of people in {location}. Some people are sipping lattes, some working on laptops, some chatting with friends, or writing in journals.',
+    'A friendly welcoming neighborhood bar in {location}.',
+    'A band performing on stage in {location}.',
+    'An office full of busy programmers using VS Code in {location}.',
+    'An inspiring skyline view of {location}.',
+    'A view of a famous landmark in {location}.',
+    'The typical food eaten in {location}.',
+    'A beautiful and awe-inspiring scene of the nature, plants, and animals that are found in {location}.',
+    'An image of a futuristic version of {location}, inspired by Blade Runner.',
+    '{location}.',
 ];
 
 function getScenePart() {
