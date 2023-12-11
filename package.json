@@ -27,12 +27,24 @@
     "commands": [
       {
         "command": "dall-clock.refresh",
-        "title": "Refresh",
+        "title": "Refresh Time",
         "icon": "$(sync)",
-        "category": "DALL·Clock"
+        "category": "DALL·House"
       },
       {
         "command": "dall-clock.refresh-dummy",
+        "title": "Refreshing...",
+        "icon": "$(sync~spin)",
+        "enablement": "false"
+      },
+      {
+        "command": "dall-git-branch.refresh",
+        "title": "Refresh Branch",
+        "icon": "$(sync)",
+        "category": "DALL·House"
+      },
+      {
+        "command": "dall-git-branch.refresh-dummy",
         "title": "Refreshing...",
         "icon": "$(sync~spin)",
         "enablement": "false"
@@ -44,7 +56,7 @@
       {
         "command": "dall-toys.clearKey",
         "title": "Clear API Key",
-        "category": "DALL·Clock"
+        "category": "DALL·House"
       }
     ],
     "menus": {
@@ -63,6 +75,16 @@
         {
           "command": "dall-clock.refresh-dummy",
           "when": "view == dall-clock && dall-clock.refreshing",
+          "group": "navigation"
+        },
+        {
+          "command": "dall-git-branch.refresh",
+          "when": "view == dall-git-branch && !dall-git-branch.refreshing",
+          "group": "navigation"
+        },
+        {
+          "command": "dall-git-branch.refresh-dummy",
+          "when": "view == dall-git-branch && dall-git-branch.refreshing",
           "group": "navigation"
         },
         {

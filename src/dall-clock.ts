@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import * as os from 'os';
-import { generateAndDownloadAiImage } from './openai';
+import { generateAndDownloadAiImageWithTextCheck } from './openai';
 import OpenAI from 'openai';
+import { getArtStyleAndFeelPart } from './promptUtils';
 
 const refreshesBeforeWait = 3;
 
@@ -106,7 +107,7 @@ export class DallClockWebviewProvider implements vscode.WebviewViewProvider {
 			const style = vscode.workspace.getConfiguration('dall-clock').get<OpenAI.ImageGenerateParams['style']>('style');
 			const retryCount = vscode.workspace.getConfiguration('dall-clock').get<number>('retryCount', 3);
 
-			const result = await generateAndDownloadAiImage(this._extensionContext, prompt.fullPrompt, prompt.requiredString, retryCount, this._outputChannel, { quality, size, style });
+			const result = await generateAndDownloadAiImageWithTextCheck(this._extensionContext, prompt.fullPrompt, prompt.requiredString, retryCount, this._outputChannel, { quality, size, style });
 			this._outputChannel.appendLine(`    Saved: ${result.localPath}`);
 			this._lastImage = result.localPath;
 			this._extensionContext.globalState.update('lastImage', result.localPath);
@@ -134,7 +135,6 @@ export class DallClockWebviewProvider implements vscode.WebviewViewProvider {
 	private _getHtmlForWebview(webview: vscode.Webview): string {
 		const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionContext.extensionUri, 'media', 'main.js'));
 		const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionContext.extensionUri, 'media', 'main.css'));
-		const imgUri = webview.asWebviewUri(vscode.Uri.file('/var/folders/tx/p0ycbfpj37786p760wwdg6y80000gn/T/dall-clock/a3dc84f165632423ef5399906c19c0a8dcfd48c8.png'));
 
 		const nonce = getNonce();
 		return `<!DOCTYPE html>
@@ -147,7 +147,7 @@ export class DallClockWebviewProvider implements vscode.WebviewViewProvider {
             </head>
             <body>
                 <div id="image-container">
-					<img nonce="${nonce}" src=${imgUri} />
+					<img nonce="${nonce}" src="" />
 				</div>
 
 				<script nonce="${nonce}" src="${scriptUri}"></script>
@@ -211,55 +211,6 @@ const scenes = [
 
 function getScenePart() {
 	return scenes[Math.floor(Math.random() * scenes.length)];
-}
-
-const artStyles = [
-	'pixel art',
-	'oil painting',
-	'watercolor painting',
-	'abstract painting',
-	'digital painting',
-	'3d rendering',
-	'political cartoon',
-	'modern comic book',
-	'classic comic book',
-	'photo',
-	'collage',
-	'charcoal sketch',
-	'tilt-shift photography',
-	'psychedlic art',
-	'ukiyo-e',
-	'butter sculpture on display',
-	'legos',
-	'',
-];
-
-const feels = [
-	'vaporwave',
-	// 'post-apocalyptic',
-	'sci-fi',
-	'steampunk',
-	'memphis group',
-	'optimistic',
-	// 'gloomy',
-	'utopian',
-	'dieselpunk',
-	'afrofuturism',
-	'cyberpunk',
-	'realistic',
-	'hyper-realistic',
-	''
-];
-
-function getArtStyleAndFeelPart(): string {
-	const artStyle = artStyles[Math.floor(Math.random() * artStyles.length)];
-	const feel = feels[Math.floor(Math.random() * feels.length)];
-	if (artStyle) {
-		return feel ? `Art style: ${artStyle} with a ${feel} feel.`
-			: `Art style: ${artStyle}.`;
-	}
-
-	return feel ? `Has a ${feel} feel.` : ``;
 }
 
 const timeWordsOptions = [

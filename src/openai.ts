@@ -1,15 +1,15 @@
 import * as crypto from 'crypto';
 import OpenAI from 'openai';
 import * as os from 'os';
+import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { downloadFile } from './utils';
 
-export async function generateAndDownloadAiImage(extContext: vscode.ExtensionContext, imageGenPrompt: string, requireText: string, retryCount: number, outputChannel: vscode.OutputChannel, optsOverride?: Partial<OpenAI.ImageGenerateParams>): Promise<{ localPath: string, image: OpenAI.Image }> {
+export async function generateAndDownloadAiImageWithTextCheck(extContext: vscode.ExtensionContext, imageGenPrompt: string, requireText: string, retryCount: number, outputChannel: vscode.OutputChannel, optsOverride?: Partial<OpenAI.ImageGenerateParams>): Promise<{ localPath: string, image: OpenAI.Image }> {
     const randomFileName = crypto.randomBytes(20).toString('hex');
-    const tempFileWithoutExtension = path.join(os.tmpdir(), 'dall-clock', `${randomFileName}`);
+    const tempFileWithoutExtension = path.join(os.tmpdir(), 'dall-house', randomFileName);
     const tmpFilePath = tempFileWithoutExtension + '.png';
-    console.log(tmpFilePath);
 
     const fetchAndLog = async () => {
         const image = await fetchAiImage(extContext, imageGenPrompt, optsOverride);
@@ -33,6 +33,20 @@ export async function generateAndDownloadAiImage(extContext: vscode.ExtensionCon
         }
     }
 
+    await downloadFile(image.url!, tmpFilePath);
+    return { localPath: tmpFilePath, image };
+}
+
+export async function generateAndDownloadAiImageWithKey(extContext: vscode.ExtensionContext, imageGenPrompt: string, key: string, outputChannel: vscode.OutputChannel, optsOverride?: Partial<OpenAI.ImageGenerateParams>): Promise<{ localPath: string, image: OpenAI.Image }> {
+    const tmpFilePath = path.join(os.tmpdir(), 'dall-house', key) + '.png';
+    if (await exists(tmpFilePath)) {
+        outputChannel.appendLine(`    Using cached image at ${tmpFilePath}`);
+        return { localPath: tmpFilePath, image: { url: tmpFilePath } };
+    }
+
+    const image = await fetchAiImage(extContext, imageGenPrompt, optsOverride);
+    outputChannel.appendLine('    Revised prompt: ' + image.revised_prompt);
+    outputChannel.appendLine(`    URL: ${image.url}`);
     await downloadFile(image.url!, tmpFilePath);
     return { localPath: tmpFilePath, image };
 }
@@ -102,4 +116,30 @@ async function getUserAiKey(context: vscode.ExtensionContext): Promise<string | 
 
 export function clearUserAiKey(context: vscode.ExtensionContext) {
     context.secrets.delete(keyName);
+}
+
+export async function textRequest(extContext: vscode.ExtensionContext, messages: OpenAI.ChatCompletionMessageParam[], outputChannel: vscode.OutputChannel): Promise<string> {
+    const key = await getUserAiKey(extContext);
+    if (!key) {
+        throw new Error('Missing OpenAI API key');
+    }
+
+    const openai = new OpenAI({ apiKey: key });
+    outputChannel.appendLine(`    Request: ${JSON.stringify(messages)}`);
+    const response = await openai.chat.completions.create({
+        model: 'gpt-4-0613',
+        messages
+    });
+    const textResponse = response.choices[0].message.content;
+    outputChannel.appendLine(`    Response: ${textResponse}`);
+    return textResponse ?? '';
+}
+
+async function exists(file: string): Promise<boolean> {
+    try {
+        await fs.promises.access(file);
+        return true;
+    } catch (error) {
+        return false;
+    }
 }
