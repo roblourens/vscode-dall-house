@@ -37,18 +37,22 @@ export async function generateAndDownloadAiImageWithTextCheck(extContext: vscode
     return { localPath: tmpFilePath, image };
 }
 
-export async function generateAndDownloadAiImageWithKey(extContext: vscode.ExtensionContext, imageGenPrompt: string, key: string, outputChannel: vscode.OutputChannel, optsOverride?: Partial<OpenAI.ImageGenerateParams>): Promise<{ localPath: string, image: OpenAI.Image }> {
+export async function generateAndDownloadAiImageWithKey(extContext: vscode.ExtensionContext, imageGenPrompt: string, key: string, outputChannel: vscode.OutputChannel, optsOverride?: Partial<OpenAI.ImageGenerateParams>): Promise<{ localPath: string, image: OpenAI.Image, revisedPrompt: string }> {
     const tmpFilePath = path.join(os.tmpdir(), 'dall-house', key) + '.png';
-    if (await exists(tmpFilePath)) {
+    const tmpTextFilePath = path.join(os.tmpdir(), 'dall-house', key) + '.png.txt';
+    if (await exists(tmpFilePath) && await exists(tmpTextFilePath)) {
         outputChannel.appendLine(`    Using cached image at ${tmpFilePath}`);
-        return { localPath: tmpFilePath, image: { url: tmpFilePath } };
+        const revisedPrompt = await fs.promises.readFile(tmpTextFilePath, 'utf-8');
+        return { localPath: tmpFilePath, image: { url: tmpFilePath }, revisedPrompt };
     }
 
     const image = await fetchAiImage(extContext, imageGenPrompt, optsOverride);
     outputChannel.appendLine('    Revised prompt: ' + image.revised_prompt);
     outputChannel.appendLine(`    URL: ${image.url}`);
     await downloadFile(image.url!, tmpFilePath);
-    return { localPath: tmpFilePath, image };
+    await fs.promises.writeFile(tmpTextFilePath, image.revised_prompt || '');
+
+    return { localPath: tmpFilePath, image, revisedPrompt: image.revised_prompt || '' };
 }
 
 export async function checkForTextInImage(extContext: vscode.ExtensionContext, imageUrl: string, text: string, outputChannel: vscode.OutputChannel): Promise<boolean> {
