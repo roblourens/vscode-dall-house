@@ -63,7 +63,7 @@ export class GitBranchWebviewProvider implements vscode.WebviewViewProvider {
 				this.loadImageInWebview(this._lastData);
 			}
 
-			// this.refresh();
+			this.refresh();
 		}));
 
 		// Initialize with lastImage from globalState.
@@ -92,6 +92,7 @@ export class GitBranchWebviewProvider implements vscode.WebviewViewProvider {
 		try {
 			vscode.commands.executeCommand('setContext', 'dall-git-branch.refreshing', true);
 			this._isRefreshing = true;
+			// Don't do this if it will be able to use the cached image for the branch
 			const promptResult = await this._getImgPrompt();
 			if (!promptResult) {
 				this.loadImageInWebview(null);
