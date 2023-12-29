@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as os from 'os';
-import { generateAndDownloadAiImageWithKey, generateAndDownloadAiImageWithTextCheck, textRequest } from './openai';
+import { generateAndDownloadAiImageWithKey, generateAndDownloadAiImageWithTextCheck, getCachedImageForKey, textRequest } from './openai';
 import OpenAI from 'openai';
 import { API as GitAPI, GitExtension, Repository } from './git';
 import { getArtStyleAndFeelPart, getCuteArtStyleAndFeelPart } from './promptUtils';
@@ -87,25 +87,33 @@ export class GitBranchWebviewProvider implements vscode.WebviewViewProvider {
 			return;
 		}
 
-		const seed = force ? String(Math.random()) : '';
-
 		try {
-			vscode.commands.executeCommand('setContext', 'dall-git-branch.refreshing', true);
 			this._isRefreshing = true;
-			// Don't do this if it will be able to use the cached image for the branch
+
+			const imgKey = this._getBranchName();
+			const cachedImg = imgKey && !force && await getCachedImageForKey(imgKey);
+			if (cachedImg) {
+				this._outputChannel.appendLine(`Refreshing for branch ${imgKey}, showing cached image: ${cachedImg.localPath}`);
+				this._lastData = { imagePath: cachedImg.localPath, tooltip: cachedImg.revisedPrompt };
+				this._extensionContext.globalState.update(lastBranchImageDataKey, this._lastData);
+				this.loadImageInWebview(this._lastData);
+				return;
+			}
+
 			const promptResult = await this._getImgPrompt();
 			if (!promptResult) {
 				this.loadImageInWebview(null);
 				return;
 			}
 
+			vscode.commands.executeCommand('setContext', 'dall-git-branch.refreshing', true);
 			this._outputChannel.appendLine(`*Prompt: ${promptResult.prompt}`);
 			const quality = vscode.workspace.getConfiguration('dall-clock').get<OpenAI.ImageGenerateParams['quality']>('quality');
 			const size = vscode.workspace.getConfiguration('dall-clock').get<OpenAI.ImageGenerateParams['size']>('size');
 			const style = vscode.workspace.getConfiguration('dall-clock').get<OpenAI.ImageGenerateParams['style']>('style');
 			// const retryCount = vscode.workspace.getConfiguration('dall-clock').get<number>('retryCount', 3);
 
-			const result = await generateAndDownloadAiImageWithKey(this._extensionContext, promptResult.prompt, seed + promptResult.branchName, this._outputChannel, { quality, size, style });
+			const result = await generateAndDownloadAiImageWithKey(this._extensionContext, promptResult.prompt, promptResult.branchName, this._outputChannel, { quality, size, style });
 			this._outputChannel.appendLine(`    Saved: ${result.localPath}`);
 			this._lastData = { imagePath: result.localPath, tooltip: result.revisedPrompt };
 			this._extensionContext.globalState.update(lastBranchImageDataKey, this._lastData);
