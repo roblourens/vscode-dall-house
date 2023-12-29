@@ -98,25 +98,37 @@
         {
           "type": "webview",
           "id": "dall-clock",
-          "name": "Dall Clock"
+          "name": "Dall Clock",
+          "when": "config.dallHouse.clock.enable"
         }
       ],
       "scm": [
         {
           "type": "webview",
           "id": "dall-git-branch",
-          "name": "Branch Critter"
+          "name": "Branch Critter",
+          "when": "config.dallHouse.branchCritter.enable"
         }
       ]
     },
     "configuration": {
       "properties": {
-        "dall-clock.location": {
+        "dallHouse.clock.enable": {
+          "type": "boolean",
+          "description": "Whether to show the DALL·House clock view.",
+          "default": true
+        },
+        "dallHouse.branchCritter.enable": {
+          "type": "boolean",
+          "description": "Whether to show the DALL·House git branch critter view.",
+          "default": true
+        },
+        "dallHouse.clock.location": {
           "type": "string",
           "description": "A free-form description of your location, like a city name.",
           "default": "Seattle, WA"
         },
-        "dall-clock.quality": {
+        "dallHouse.quality": {
           "type": "string",
           "enum": [
             "hd",
@@ -125,7 +137,7 @@
           "description": "The quality used in the request to the OpenAI API. \"hd\" is more expensive and slower but results in higher quality images.",
           "default": "standard"
         },
-        "dall-clock.size": {
+        "dallHouse.size": {
           "type": "string",
           "enum": [
             "1024x1024",
@@ -135,7 +147,7 @@
           "description": "The size used in the request to the OpenAI API. \"1024x1024\" is cheapest and fastest.",
           "default": "1024x1024"
         },
-        "dall-clock.style": {
+        "dallHouse.style": {
           "type": "string",
           "enum": [
             "vivid",
@@ -144,15 +156,15 @@
           "description": "The style used in the request to the OpenAI API. \"vivid\" causes the model to lean towards generating hyper-real and dramatic images. \"natural\" causes the model to produce more natural, less hyper-real looking images.",
           "default": "vivid"
         },
-        "dall-clock.retryCount": {
+        "dallHouse.clock.retryCount": {
           "type": "number",
           "description": "Limit the number of times that generating one image will be retried until one is generated with the correct text.",
           "default": 3
         },
-        "dall-clock.updatePeriod": {
+        "dallHouse.clock.updatePeriod": {
           "type": "number",
           "description": "The number of minutes between updates.",
-          "default": 1
+          "default": 3
         }
       }
     }

@@ -4,7 +4,7 @@ import { generateAndDownloadAiImageWithTextCheck } from './openai';
 import OpenAI from 'openai';
 import { getArtStyleAndFeelPart } from './promptUtils';
 
-const refreshesBeforeWait = 3;
+const refreshesBeforeWait = 1;
 
 export class DallClockWebviewProvider implements vscode.WebviewViewProvider {
 	private _view: vscode.WebviewView | undefined;
@@ -79,7 +79,7 @@ export class DallClockWebviewProvider implements vscode.WebviewViewProvider {
 		}
 
 		const now = Date.now();
-		const refreshPeriod = 1000 * 60 * vscode.workspace.getConfiguration('dall-clock').get<number>('updatePeriod', 1);
+		const refreshPeriod = 1000 * 60 * vscode.workspace.getConfiguration('dallHouse.clock').get<number>('updatePeriod', 3);
 		if (!force && now - this._lastRefresh < refreshPeriod) {
 			return;
 		}
@@ -102,10 +102,10 @@ export class DallClockWebviewProvider implements vscode.WebviewViewProvider {
 			vscode.commands.executeCommand('setContext', 'dall-clock.refreshing', true);
 			const prompt = getPrompt();
 			this._outputChannel.appendLine(`*Prompt: ${prompt.fullPrompt}`);
-			const quality = vscode.workspace.getConfiguration('dall-clock').get<OpenAI.ImageGenerateParams['quality']>('quality');
-			const size = vscode.workspace.getConfiguration('dall-clock').get<OpenAI.ImageGenerateParams['size']>('size');
-			const style = vscode.workspace.getConfiguration('dall-clock').get<OpenAI.ImageGenerateParams['style']>('style');
-			const retryCount = vscode.workspace.getConfiguration('dall-clock').get<number>('retryCount', 3);
+			const quality = vscode.workspace.getConfiguration('dallHouse').get<OpenAI.ImageGenerateParams['quality']>('quality');
+			const size = vscode.workspace.getConfiguration('dallHouse').get<OpenAI.ImageGenerateParams['size']>('size');
+			const style = vscode.workspace.getConfiguration('dallHouse').get<OpenAI.ImageGenerateParams['style']>('style');
+			const retryCount = vscode.workspace.getConfiguration('dallHouse.clock').get<number>('retryCount', 3);
 
 			const result = await generateAndDownloadAiImageWithTextCheck(this._extensionContext, prompt.fullPrompt, prompt.requiredString, retryCount, this._outputChannel, { quality, size, style });
 			this._outputChannel.appendLine(`    Saved: ${result.localPath}`);
@@ -166,7 +166,7 @@ function getNonce() {
 }
 
 function getPrompt(): { fullPrompt: string, requiredString: string } {
-	const location = vscode.workspace.getConfiguration('dall-clock').get('location', 'Seattle, WA');
+	const location = vscode.workspace.getConfiguration('dallHouse.clock').get('location', 'Seattle, WA');
 	const date = new Date();
 	date.setSeconds(date.getSeconds() + 30); // Add 30 seconds because it takes so damn long to update the image
 	const includeAmPm = Math.random() < 0.5;

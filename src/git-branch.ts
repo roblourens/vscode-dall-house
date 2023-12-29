@@ -32,7 +32,12 @@ export class GitBranchWebviewProvider implements vscode.WebviewViewProvider {
 				this._gitAPI = gitExtension.exports.getAPI(1);
 				const initRepo = (r: Repository) => {
 					this._register(r.state.onDidChange(() => this.refresh()));
-					this._register(r.ui.onDidChange(() => this.refresh()));
+					this._register(r.ui.onDidChange(() => {
+						setTimeout(() => {
+							// When selection changes, the selection props have not been fully updated when this event first fires
+							this.refresh();
+						}, 0);
+					}));
 				};
 				this._gitAPI.repositories.forEach(initRepo);
 				this._register(this._gitAPI.onDidOpenRepository(initRepo));
@@ -100,18 +105,17 @@ export class GitBranchWebviewProvider implements vscode.WebviewViewProvider {
 				return;
 			}
 
+			vscode.commands.executeCommand('setContext', 'dall-git-branch.refreshing', true);
 			const promptResult = await this._getImgPrompt();
 			if (!promptResult) {
 				this.loadImageInWebview(null);
 				return;
 			}
 
-			vscode.commands.executeCommand('setContext', 'dall-git-branch.refreshing', true);
 			this._outputChannel.appendLine(`*Prompt: ${promptResult.prompt}`);
-			const quality = vscode.workspace.getConfiguration('dall-clock').get<OpenAI.ImageGenerateParams['quality']>('quality');
-			const size = vscode.workspace.getConfiguration('dall-clock').get<OpenAI.ImageGenerateParams['size']>('size');
-			const style = vscode.workspace.getConfiguration('dall-clock').get<OpenAI.ImageGenerateParams['style']>('style');
-			// const retryCount = vscode.workspace.getConfiguration('dall-clock').get<number>('retryCount', 3);
+			const quality = vscode.workspace.getConfiguration('dallHouse').get<OpenAI.ImageGenerateParams['quality']>('quality');
+			const size = vscode.workspace.getConfiguration('dallHouse').get<OpenAI.ImageGenerateParams['size']>('size');
+			const style = vscode.workspace.getConfiguration('dallHouse').get<OpenAI.ImageGenerateParams['style']>('style');
 
 			const result = await generateAndDownloadAiImageWithKey(this._extensionContext, promptResult.prompt, promptResult.branchName, this._outputChannel, { quality, size, style });
 			this._outputChannel.appendLine(`    Saved: ${result.localPath}`);

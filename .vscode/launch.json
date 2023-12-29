@@ -12,6 +12,7 @@
 			"args": [
 				"--extensionDevelopmentPath=${workspaceFolder}"
 			],
+			"trace": true,
 			"outFiles": [
 				"${workspaceFolder}/dist/**/*.js"
 			],
