@@ -107,7 +107,7 @@
           "type": "webview",
           "id": "dall-git-branch",
           "name": "Branch Critter",
-          "when": "config.dallHouse.branchCritter.enable"
+          "when": "config.dallHouse.branchCritter.enable && !dall-git-branch.noImage"
         }
       ]
     },

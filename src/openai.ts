@@ -50,8 +50,9 @@ export async function getCachedImageForKey(key: string): Promise<undefined | { l
     }
 }
 
-export async function generateAndDownloadAiImageWithKey(extContext: vscode.ExtensionContext, imageGenPrompt: string, key: string, outputChannel: vscode.OutputChannel, optsOverride?: Partial<OpenAI.ImageGenerateParams>): Promise<{ localPath: string, image: OpenAI.Image, revisedPrompt: string }> {
-    const tmpFilePath = getCacheImagePath(key);
+export async function generateAndDownloadAiImage(extContext: vscode.ExtensionContext, imageGenPrompt: string, tmpFileName: string, isForce: boolean, outputChannel: vscode.OutputChannel, optsOverride?: Partial<OpenAI.ImageGenerateParams>): Promise<{ localPath: string, image: OpenAI.Image, revisedPrompt: string }> {
+    const tmpFileNameWithSeed = isForce ? `${tmpFileName}-${Math.random()}` : tmpFileName;
+    const tmpFilePath = getCacheImagePath(tmpFileNameWithSeed);
     const tmpTextFilePath = tmpFilePath + '.txt';
 
     const image = await fetchAiImage(extContext, imageGenPrompt, optsOverride);
@@ -59,6 +60,13 @@ export async function generateAndDownloadAiImageWithKey(extContext: vscode.Exten
     outputChannel.appendLine(`    URL: ${image.url}`);
     await downloadFile(image.url!, tmpFilePath);
     await fs.promises.writeFile(tmpTextFilePath, image.revised_prompt || '');
+    if (isForce) {
+        // Also write to the base path
+        const baseTmpFilePath = getCacheImagePath(tmpFileName);
+        const baseTmpTextFilePath = baseTmpFilePath + '.txt';
+        await fs.promises.copyFile(tmpFilePath, baseTmpFilePath);
+        await fs.promises.writeFile(baseTmpTextFilePath, image.revised_prompt || '');
+    }
 
     return { localPath: tmpFilePath, image, revisedPrompt: image.revised_prompt || '' };
 }

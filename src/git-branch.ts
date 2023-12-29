@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as os from 'os';
-import { generateAndDownloadAiImageWithKey, generateAndDownloadAiImageWithTextCheck, getCachedImageForKey, textRequest } from './openai';
+import { generateAndDownloadAiImage, generateAndDownloadAiImageWithTextCheck, getCachedImageForKey, textRequest } from './openai';
 import OpenAI from 'openai';
 import { API as GitAPI, GitExtension, Repository } from './git';
 import { getArtStyleAndFeelPart, getCuteArtStyleAndFeelPart } from './promptUtils';
@@ -22,15 +22,21 @@ export class GitBranchWebviewProvider implements vscode.WebviewViewProvider {
 		private readonly _extensionContext: vscode.ExtensionContext,
 		private readonly _outputChannel: vscode.OutputChannel,
 	) {
-		this._initGitExtension();
+		this._initGitExtension().then(() => this.refresh());
 	}
 
-	private _initGitExtension() {
+	private async _initGitExtension() {
 		if (!this._gitAPI) {
 			const gitExtension = vscode.extensions.getExtension<GitExtension>('vscode.git');
+			if (!gitExtension) {
+				return;
+			}
+
+			await gitExtension.activate();
 			if (gitExtension?.isActive) {
 				this._gitAPI = gitExtension.exports.getAPI(1);
 				const initRepo = (r: Repository) => {
+					this._outputChannel.appendLine(`Init repo: ${r.rootUri.fsPath}`);
 					this._register(r.state.onDidChange(() => this.refresh()));
 					this._register(r.ui.onDidChange(() => {
 						setTimeout(() => {
@@ -117,7 +123,7 @@ export class GitBranchWebviewProvider implements vscode.WebviewViewProvider {
 			const size = vscode.workspace.getConfiguration('dallHouse').get<OpenAI.ImageGenerateParams['size']>('size');
 			const style = vscode.workspace.getConfiguration('dallHouse').get<OpenAI.ImageGenerateParams['style']>('style');
 
-			const result = await generateAndDownloadAiImageWithKey(this._extensionContext, promptResult.prompt, promptResult.branchName, this._outputChannel, { quality, size, style });
+			const result = await generateAndDownloadAiImage(this._extensionContext, promptResult.prompt, promptResult.branchName, !!force, this._outputChannel, { quality, size, style });
 			this._outputChannel.appendLine(`    Saved: ${result.localPath}`);
 			this._lastData = { imagePath: result.localPath, tooltip: result.revisedPrompt };
 			this._extensionContext.globalState.update(lastBranchImageDataKey, this._lastData);
@@ -141,6 +147,9 @@ export class GitBranchWebviewProvider implements vscode.WebviewViewProvider {
 		} else {
 			this._view!.webview.postMessage({ type: 'setImage', imageUrl: null });
 		}
+
+		// Need to show the view by default, so the extension gets activated when it shows, then we can decide to hide it if needed
+		vscode.commands.executeCommand('setContext', 'dall-git-branch.noImage', !data);
 	}
 
 	private _getHtmlForWebview(webview: vscode.Webview): string {
@@ -176,7 +185,7 @@ export class GitBranchWebviewProvider implements vscode.WebviewViewProvider {
 
 		// Require that the user's phrase is also visible as written text somewhere in the image.
 		//  ${getCuteArtStyleAndFeelPart()}
-		const askForImgPrompt = `You write creative prompts for an AI image generator. The user will give a short phrase, and you must generate a prompt for DALL-E based on that phrase. The animal must be cute. Reply with the prompt and no other text.`;
+		const askForImgPrompt = `You write creative prompts for an AI image generator. The user will give a short phrase, and you must generate a prompt for DALL-E based on that phrase. The animal must be cute. Reply with the prompt and no other text`;
 		const branchNoDash = branchName.replace(/-/g, ' ');
 		const messages: OpenAI.ChatCompletionMessageParam[] = [
 			{
@@ -191,7 +200,7 @@ export class GitBranchWebviewProvider implements vscode.WebviewViewProvider {
 		const prompt = await textRequest(this._extensionContext, messages, this._outputChannel);
 		// const promptWithText = prompt + ` The text ${branchNoDash} is visible somewhere in the image`;
 		return {
-			prompt,
+			prompt: prompt + `\nArt style: Realistic nature photograph`,
 			branchName
 		};
 	}
