@@ -1,19 +1,48 @@
-# DALL · Clock
+# DALL · House: Dall-E powered toys for VS Code
+
+This is an extension for the sophisticated and intelligent user who wants to look at cool pictures while they use VS Code.
+
+It has two features: creating an image to illustrate your VS Code git branch name, and creating an image that shows the current time. Determine which features are enabled with the `dallHouse.*.enable` settings.
+
+## Setup
+
+1. Install extension
+2. Enter your own OpenAI API key when prompted
+   1. Run "Clear API Key" if you need to change it
+3. See cool picture!
+
+Also be sure to configure your API spending limit. DALL·House tries to avoid making too many API requests. It will only update the image when its view is visible, and only when you have been opening or editing files- ie when you are actively using the VS Code window. By default, the clock only updates every 3 minutes, see `dallHouse.clock.updatePeriod` to change this. But you are responsible for monitoring your API usage and paying Sam.
+
+## Branch Critter
+
+<p align="center">
+  <img src="https://github.com/roblourens/vscode-dall-clock/blob/6768b235370a8db96243f95bfcec367a24382289/samples/branch-critter/7.png?raw=true">
+</p>
+
+This is designed to work with VS Code's randomly generated branch names that pair a random adjective with a random animal. But it will pick up any branch name that fits the format `something-animal` or `foo/something-animal`.
+
+<table>
+  <tr>
+    <td><img src="https://github.com/roblourens/vscode-dall-clock/blob/6768b235370a8db96243f95bfcec367a24382289/samples/branch-critter/1.png?raw=true"></td>
+    <td><img src="https://github.com/roblourens/vscode-dall-clock/blob/6768b235370a8db96243f95bfcec367a24382289/samples/branch-critter/2.png?raw=true"></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/roblourens/vscode-dall-clock/blob/6768b235370a8db96243f95bfcec367a24382289/samples/branch-critter/3.png?raw=true"></td>
+    <td><img src="https://github.com/roblourens/vscode-dall-clock/blob/6768b235370a8db96243f95bfcec367a24382289/samples/branch-critter/4.png?raw=true"></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/roblourens/vscode-dall-clock/blob/6768b235370a8db96243f95bfcec367a24382289/samples/branch-critter/5.png?raw=true"></td>
+    <td><img src="https://github.com/roblourens/vscode-dall-clock/blob/6768b235370a8db96243f95bfcec367a24382289/samples/branch-critter/6.png?raw=true"></td>
+  </tr>
+</table>
+
+## Dall Clock
 
 <p align="center">
   <img src="https://github.com/roblourens/vscode-dall-clock/blob/2ba587b3e9e9fbca8316e21250ee3c9caba338b5/samples/12.png?raw=true">
 </p>
 
-This is the extension for people who want to know what time it is while using VS Code, and also look at interesting pictures.
-
-1. Install extension
-2. Enter your own OpenAI API key when prompted
-   1. Run "Clear API Key" if you need to change it
-3. Find out what time it is!
-
 Be sure to configure `dall-clock.location` for maximum personalization. DALL·Clock will generate images based in that location.
-
-Also be sure to configure your API spending limit. DALL·Clock tries to avoid making too many API requests. It will only update the image when its view is visible, and only when you have been opening or editing files- ie when you are actively using the VS Code window. But you are responsible for monitoring your API usage and paying Sam.
 
 See the generated prompts in the "Dall Clock Log" output channel.
 
