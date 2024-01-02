@@ -2,8 +2,8 @@
   "name": "vscode-dall-toys",
   "displayName": "DALL · House",
   "publisher": "roblourens",
-  "description": "Play with DALL-E in VS Code",
-  "version": "0.0.4",
+  "description": "Dall·E-powered toys for VS Code",
+  "version": "0.0.5",
   "engines": {
     "vscode": "^1.84.0"
   },
