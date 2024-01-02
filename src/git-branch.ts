@@ -224,7 +224,7 @@ export class GitBranchWebviewProvider implements vscode.WebviewViewProvider {
 			return;
 		}
 
-		const interestingBranchRepo = selectedRepo.state.HEAD?.name?.match(/(.+\/)?([^-]+-[^-]+)/);
+		const interestingBranchRepo = selectedRepo.state.HEAD?.name?.match(/(?:.+\/)?([^-]+-[^-]+)/);
 		if (!interestingBranchRepo) {
 			this._outputChannel.appendLine('No interesting branch found');
 			return;
