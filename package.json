@@ -123,6 +123,16 @@
           "description": "Whether to show the DALL·House git branch critter view.",
           "default": true
         },
+        "dallHouse.branchCritter.artStyle": {
+          "type": "string",
+          "markdownDescription": "Use this to customize the art style for your branch critter. Or write whatever you want, it just gets appended to the prompt. If not specified, a random style will be chosen.\n\nExamples:\n- A cartoon, colorful and cute\n- A cute 3d render\n- A realistic photograph",
+          "default": ""
+        },
+        "dallHouse.branchCritter.includeText": {
+          "type": "boolean",
+          "description": "If enabled, the text of the branch name will be included in the prompt.",
+          "default": false
+        },
         "dallHouse.clock.location": {
           "type": "string",
           "description": "A free-form description of your location, like a city name.",

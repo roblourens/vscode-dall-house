@@ -185,7 +185,7 @@ export class GitBranchWebviewProvider implements vscode.WebviewViewProvider {
 
 		// Require that the user's phrase is also visible as written text somewhere in the image.
 		//  ${getCuteArtStyleAndFeelPart()}
-		const askForImgPrompt = `You write creative prompts for an AI image generator. The user will give a short phrase, and you must generate a prompt for DALL-E based on that phrase. The animal must be cute. Reply with the prompt and no other text`;
+		const askForImgPrompt = `You write creative prompts for an AI image generator. The user will give a short phrase that includes an animal name, and you must generate a prompt for DALL-E based on that phrase. The animal must be cute. Reply with the prompt and no other text`;
 		const branchNoDash = branchName.replace(/-/g, ' ');
 		const messages: OpenAI.ChatCompletionMessageParam[] = [
 			{
@@ -197,10 +197,15 @@ export class GitBranchWebviewProvider implements vscode.WebviewViewProvider {
 				role: 'user',
 			}
 		];
-		const prompt = await textRequest(this._extensionContext, messages, this._outputChannel);
-		// const promptWithText = prompt + ` The text ${branchNoDash} is visible somewhere in the image`;
+		let prompt = await textRequest(this._extensionContext, messages, this._outputChannel);
+		const artStyle = vscode.workspace.getConfiguration('dallHouse.branchCritter').get<string>('artStyle') || getArtStyle();
+		const includeText = vscode.workspace.getConfiguration('dallHouse.branchCritter').get<string>('includeText');
+		if (includeText) {
+			prompt += ` The exact text "${branchNoDash}" is visible somewhere in the image`;
+		}
+
 		return {
-			prompt: prompt + `\nArt style: Realistic nature photograph`,
+			prompt: prompt + (artStyle ? `\nArt style: ${artStyle}` : ''),
 			branchName
 		};
 	}
@@ -219,7 +224,7 @@ export class GitBranchWebviewProvider implements vscode.WebviewViewProvider {
 			return;
 		}
 
-		const interestingBranchRepo = selectedRepo.state.HEAD?.name?.match(/.+\/([^-]+-[^-]+)/);
+		const interestingBranchRepo = selectedRepo.state.HEAD?.name?.match(/(.+\/)?([^-]+-[^-]+)/);
 		if (!interestingBranchRepo) {
 			this._outputChannel.appendLine('No interesting branch found');
 			return;
@@ -237,4 +242,15 @@ function getNonce() {
 		text += possible.charAt(Math.floor(Math.random() * possible.length));
 	}
 	return text;
+}
+
+const artStyles = [
+	'A cartoon, colorful and cute with a background showing its environment',
+	'A cute 3d render of the animal',
+	'A magazine-quality real photograph by a nature photographer',
+	''
+];
+
+function getArtStyle() {
+	return artStyles[Math.floor(Math.random() * artStyles.length)];
 }
