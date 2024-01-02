@@ -17,10 +17,10 @@
   "icon": "icon.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/roblourens/dall-clock.git"
+    "url": "https://github.com/roblourens/vscode-dall-house.git"
   },
   "bugs": {
-    "url": "https://github.com/roblourens/dall-clock/issues"
+    "url": "https://github.com/roblourens/vscode-dall-house/issues"
   },
   "main": "./dist/extension.js",
   "contributes": {
