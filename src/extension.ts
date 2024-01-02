@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { DallClockWebviewProvider } from './dall-clock';
 import { GitBranchWebviewProvider } from './git-branch';
+import { clearUserAiKey } from './openai';
 
 export function activate(context: vscode.ExtensionContext) {
     const outputChannel = vscode.window.createOutputChannel('Dall House Log', { log: true });
@@ -17,7 +18,7 @@ export function activate(context: vscode.ExtensionContext) {
             clockProvider.open()),
         vscode.commands.registerCommand('dall-git-branch.refresh', async () =>
             gitBranchProvider.refresh(true)),
-        // vscode.commands.registerCommand('dall-git-branch.open', async () =>
-        //     clockProvider.open())
+        vscode.commands.registerCommand('dall-toys.clearKey', async () =>
+            clearUserAiKey(context)),
     );
 }
