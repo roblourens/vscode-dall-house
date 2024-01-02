@@ -19,7 +19,7 @@ Also be sure to configure your API spending limit. DALL·House tries to avoid ma
   <img src="https://github.com/roblourens/vscode-dall-clock/blob/6768b235370a8db96243f95bfcec367a24382289/samples/branch-critter/7.png?raw=true">
 </p>
 
-This is designed to work with VS Code's randomly generated branch names that pair a random adjective with a random animal. But it will pick up any branch name that fits the format `something-animal` or `foo/something-animal`.
+This is designed to work with VS Code's randomly generated branch names that pair a random adjective with a random animal. But it will pick up any branch name that fits the format `foo-bar` or `rob/foo-bar`.
 
 <table>
   <tr>
