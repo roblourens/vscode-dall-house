@@ -184,20 +184,50 @@ export class GitBranchWebviewProvider implements vscode.WebviewViewProvider {
 		this._outputChannel.appendLine(`Gonna request an image for branch "${branchName}"`);
 
 		// Require that the user's phrase is also visible as written text somewhere in the image.
-		//  ${getCuteArtStyleAndFeelPart()}
-		const askForImgPrompt = `You write creative prompts for an AI image generator. The user will give a short phrase that includes an animal name, and you must generate a prompt for DALL-E based on that phrase. The animal must be cute. Reply with the prompt and no other text`;
 		const branchNoDash = branchName.replace(/-/g, ' ');
-		const messages: OpenAI.ChatCompletionMessageParam[] = [
-			{
-				content: askForImgPrompt,
-				role: 'system'
-			},
-			{
-				content: branchNoDash,
-				role: 'user',
-			}
-		];
-		let prompt = await textRequest(this._extensionContext, messages, this._outputChannel);
+		const extraDetailMode = vscode.workspace.getConfiguration('dallHouse.branchCritter').get<string>('extraDetailMode');
+		let prompt: string;
+		if (extraDetailMode) {
+			const askForStoryPrompt = `You are a creative children's book author. The user will give a short phrase that describes an animal, and you must write a short silly explanation for why the animal is described that way. For example, if the user's phrase is "dizzy koala", you could reply "the koala is dizzy because it is spinning on a merry-go-round". Or if the phrase is "curious carp" you could reply "the carp is curious about a fishing hook that was lowered into the water in front of it". If the phrase is "mad rooster" you could reply "the rooster is mad because another rooster is stealing its food". You get the idea. Reply with this short one-sentence explanation and no other text.`;
+			const messages1: OpenAI.ChatCompletionMessageParam[] = [
+				{
+					content: askForStoryPrompt,
+					role: 'system'
+				},
+				{
+					content: branchNoDash,
+					role: 'user',
+				}
+			];
+			let story = await textRequest(this._extensionContext, messages1, this._outputChannel);
+
+			const askForImgPrompt = `You write creative prompts for an AI image generator. The user will give a description of an animal in a silly situation, and you must generate a prompt for DALL-E that will show the animal in that situation. The image should be light-hearted and funny. The animal MUST be cute. Reply with the prompt and no other text`;
+			const messages: OpenAI.ChatCompletionMessageParam[] = [
+				{
+					content: askForImgPrompt,
+					role: 'system'
+				},
+				{
+					content: story,
+					role: 'user',
+				}
+			];
+			prompt = await textRequest(this._extensionContext, messages, this._outputChannel);
+		} else {
+			const askForImgPrompt = `You write creative prompts for an AI image generator. The user will give a short phrase that includes an animal name, and you must generate a prompt for DALL-E based on that phrase. The animal must be cute. Reply with the prompt and no other text`;
+			const messages: OpenAI.ChatCompletionMessageParam[] = [
+				{
+					content: askForImgPrompt,
+					role: 'system'
+				},
+				{
+					content: branchNoDash,
+					role: 'user',
+				}
+			];
+			prompt = await textRequest(this._extensionContext, messages, this._outputChannel);
+		}
+
 		const artStyle = vscode.workspace.getConfiguration('dallHouse.branchCritter').get<string>('artStyle') || getArtStyle();
 		const includeText = vscode.workspace.getConfiguration('dallHouse.branchCritter').get<string>('includeText');
 		if (includeText) {

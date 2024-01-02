@@ -34,6 +34,9 @@ This is designed to work with VS Code's randomly generated branch names that pai
     <td><img src="https://github.com/roblourens/vscode-dall-clock/blob/6768b235370a8db96243f95bfcec367a24382289/samples/branch-critter/5.png?raw=true"></td>
     <td><img src="https://github.com/roblourens/vscode-dall-clock/blob/6768b235370a8db96243f95bfcec367a24382289/samples/branch-critter/6.png?raw=true"></td>
   </tr>
+  <tr>
+    <td><img src="https://github.com/roblourens/vscode-dall-clock/blob/6768b235370a8db96243f95bfcec367a24382289/samples/branch-critter/8.png?raw=true"></td>
+  </tr>
 </table>
 
 ## Dall Clock

@@ -142,7 +142,7 @@ export async function textRequest(extContext: vscode.ExtensionContext, messages:
         model: 'gpt-4-0613',
         messages
     });
-    const textResponse = response.choices[0].message.content;
+    const textResponse = response.choices[0].message.content?.replace(/^"|"$/g, '');
     outputChannel.appendLine(`    Response: ${textResponse}`);
     return textResponse ?? '';
 }
