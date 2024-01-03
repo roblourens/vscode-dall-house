@@ -1,6 +1,6 @@
 # DALL · House: Dall·E-powered toys for VS Code
 
-This is an extension for the sophisticated and intelligent user who wants to look at cool pictures while they use VS Code.
+This is an extension for the sophisticated, attractive, and intelligent user who wants to look at cool pictures while they use VS Code.
 
 <p align="center">
   <img src="https://github.com/roblourens/vscode-dall-clock/blob/6768b235370a8db96243f95bfcec367a24382289/samples/branch-critter/7.png?raw=true">
@@ -17,7 +17,7 @@ It has two features: illustrating your VS Code git branch name, and showing the 
 
 Also be sure to configure your API spending limit. DALL·House tries to avoid making too many API requests. It will only update the image when its view is visible, and only when you have been opening or editing files- ie when you are actively using the VS Code window. By default, the clock only updates every 3 minutes, see `dallHouse.clock.updatePeriod` to change this. But you are responsible for monitoring your API usage and paying Sam.
 
-> **Tip**: See the generated prompts in the "Dall Clock Log" output channel.
+> **Tip**: See the generated prompts in the "Dall Clock Log" output channel or by hovering the image.
 
 ## Branch Critter
 
