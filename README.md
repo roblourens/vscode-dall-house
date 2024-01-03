@@ -28,17 +28,20 @@ This is designed to work with VS Code's randomly generated branch names that pai
     <td><img src="https://github.com/roblourens/vscode-dall-clock/blob/6768b235370a8db96243f95bfcec367a24382289/samples/branch-critter/1.png?raw=true"></td>
     <td><img src="https://github.com/roblourens/vscode-dall-clock/blob/6768b235370a8db96243f95bfcec367a24382289/samples/branch-critter/2.png?raw=true"></td>
   </tr>
+   <tr>
+    <td><img src="https://github.com/roblourens/vscode-dall-clock/blob/393b27342019ba759ff420e04ca86df426899da4/samples/branch-critter/10.png?raw=true"></td>
+    <td><img src="https://github.com/roblourens/vscode-dall-clock/blob/bfb1445771ac26180ece836a84d49bb037328372/samples/branch-critter/9.png?raw=true"></td>
+  </tr>
   <tr>
     <td><img src="https://github.com/roblourens/vscode-dall-clock/blob/6768b235370a8db96243f95bfcec367a24382289/samples/branch-critter/3.png?raw=true"></td>
     <td><img src="https://github.com/roblourens/vscode-dall-clock/blob/6768b235370a8db96243f95bfcec367a24382289/samples/branch-critter/4.png?raw=true"></td>
   </tr>
    <tr>
     <td><img src="https://github.com/roblourens/vscode-dall-clock/blob/01b8c5a99941335ff8a66d2419c53117b3b6b21d/samples/branch-critter/8.png?raw=true"></td>
-    <td><img src="https://github.com/roblourens/vscode-dall-clock/blob/bfb1445771ac26180ece836a84d49bb037328372/samples/branch-critter/9.png?raw=true"></td>
+    <td><img src="https://github.com/roblourens/vscode-dall-clock/blob/6768b235370a8db96243f95bfcec367a24382289/samples/branch-critter/6.png?raw=true"></td>
   </tr>
   <tr>
     <td><img src="https://github.com/roblourens/vscode-dall-clock/blob/6768b235370a8db96243f95bfcec367a24382289/samples/branch-critter/5.png?raw=true"></td>
-    <td><img src="https://github.com/roblourens/vscode-dall-clock/blob/6768b235370a8db96243f95bfcec367a24382289/samples/branch-critter/6.png?raw=true"></td>
   </tr>
 </table>
 
