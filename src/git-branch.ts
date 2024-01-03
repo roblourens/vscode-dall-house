@@ -248,9 +248,9 @@ export class GitBranchWebviewProvider implements vscode.WebviewViewProvider {
 		}
 
 		const repos = this._gitAPI?.repositories;
-		const selectedRepo = repos.find(r => r.ui.selected);
+		const selectedRepo = repos.find(r => r.ui.selected) ?? repos[0]; // It seems like sometimes the 'selected' property is not set, not sure why.
 		if (!selectedRepo) {
-			this._outputChannel.appendLine('No branch selected');
+			this._outputChannel.appendLine('No repo available');
 			return;
 		}
 
