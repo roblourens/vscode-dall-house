@@ -72,7 +72,7 @@ export async function checkForTextInImage(extContext: vscode.ExtensionContext, i
     const openai = new OpenAI({ apiKey: key });
     outputChannel.appendLine(`    Checking for text "${text}" in generated image`);
     const response = await openai.chat.completions.create({
-        model: 'gpt-4-vision-preview',
+        model: 'gpt-4o',
         messages: [
             {
                 role: 'user',
@@ -87,7 +87,7 @@ export async function checkForTextInImage(extContext: vscode.ExtensionContext, i
         ],
     });
     const textResponse = response.choices[0].message.content;
-    outputChannel.appendLine(`    gpt-4-vision-preview response: "${textResponse}"`);
+    outputChannel.appendLine(`    gpt-4o response: "${textResponse}"`);
     return textResponse?.toLowerCase().includes('yes') ?? true;
 }
 
@@ -139,7 +139,7 @@ export async function textRequest(extContext: vscode.ExtensionContext, messages:
     const openai = new OpenAI({ apiKey: key });
     outputChannel.appendLine(`    Request: ${JSON.stringify(messages)}`);
     const response = await openai.chat.completions.create({
-        model: 'gpt-4-0613',
+        model: 'gpt-4o',
         messages
     });
     const textResponse = response.choices[0].message.content?.replace(/^"|"$/g, '');
