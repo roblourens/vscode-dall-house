@@ -43,7 +43,7 @@ async function getAiImage(extContext: vscode.ExtensionContext, imageGenPrompt: s
         const imageResponse = await openai.getImages(getAzureDeploymentName(), imageGenPrompt, {
             n: 1,
             size: '1024x1024',
-            quality: getDefaultQuality(),
+            quality: getQuality(),
             // TODO test Azure mode and add settings
         });
         resultUrl = (imageResponse.data[0] as any).url!;
@@ -54,7 +54,7 @@ async function getAiImage(extContext: vscode.ExtensionContext, imageGenPrompt: s
             model: "dall-e-3",
             n: 1,
             size: '1024x1024',
-            quality: getDefaultQuality(),
+            quality: getQuality(),
         });
         resultUrl = imageGen.data[0].url!;
         outputChannel.appendLine(`Rewritten to "${imageGen.data[0].revised_prompt}"`);
@@ -72,15 +72,15 @@ async function getAiImage(extContext: vscode.ExtensionContext, imageGenPrompt: s
 }
 
 function getAzureEndpoint() {
-    return vscode.workspace.getConfiguration('roblourens.chat-agent-dalle').get<string>('azureEndpoint');
+    return vscode.workspace.getConfiguration('dallHouse.chat').get<string>('azureEndpoint');
 }
 
 function getAzureDeploymentName() {
-    return vscode.workspace.getConfiguration('roblourens.chat-agent-dalle').get<string>('deploymentName');
+    return vscode.workspace.getConfiguration('dallHouse.chat').get<string>('deploymentName');
 }
 
-function getDefaultQuality(): 'hd' | 'standard' {
-    return vscode.workspace.getConfiguration('dallChat').get<'hd' | 'standard'>('defaultQuality') ?? 'hd';
+function getQuality(): 'hd' | 'standard' {
+    return vscode.workspace.getConfiguration('dallHouse.chat').get<'hd' | 'standard'>('quality') ?? 'hd';
 }
 
 const openAIKeyName = 'openai.aiKey';

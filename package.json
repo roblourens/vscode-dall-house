@@ -130,14 +130,22 @@
     },
     "configuration": {
       "properties": {
-        "dallChat.defaultQuality": {
+        "dallHouse.chat.quality": {
           "type": "string",
           "enum": [
             "hd",
             "standard"
           ],
-          "description": "The quality used in the request to the OpenAI API. \"hd\" is more expensive and slower but results in higher quality images.",
+          "description": "The quality used in the request to the OpenAI API for @dall-e. \"hd\" is more expensive and slower but results in higher quality images.",
           "default": "hd"
+        },
+        "dallHouse.chat.azureEndpoint": {
+          "type": "string",
+          "description": "The azure endpoint to make AI requests to, to generate images"
+        },
+        "dallHouse.chat.deploymentName": {
+          "type": "string",
+          "description": "The deployment name of the Dall-E model to use"
         },
         "dallHouse.clock.enable": {
           "type": "boolean",
@@ -175,7 +183,7 @@
             "hd",
             "standard"
           ],
-          "description": "The quality used in the request to the OpenAI API. \"hd\" is more expensive and slower but results in higher quality images.",
+          "description": "The quality used in the request to the OpenAI API for branchCritter and clock. \"hd\" is more expensive and slower but results in higher quality images.",
           "default": "standard"
         },
         "dallHouse.size": {
