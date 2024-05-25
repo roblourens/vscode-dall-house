@@ -19,10 +19,7 @@ export function registerChatParticipant(extContext: vscode.ExtensionContext, out
 
         response.progress(getProgressMessage());
         const result = await getAiImage(extContext, imageGenPrompt, outputChannel);
-        // response.markdown(`![Generated Image](${result.tmpFilePath})`);
-        const imgMd = new vscode.MarkdownString(`<img width="100%" src="file://${result.tmpFilePath}" />`);
-        imgMd.supportHtml = true;
-        response.markdown(imgMd);
+        response.markdown(`![Generated Image](${result.tmpFilePath})`);
     });
     participant.iconPath = new vscode.ThemeIcon('device-camera');
 
