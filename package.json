@@ -236,7 +236,6 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@api/ideogram": "file:.api/apis/ideogram",
     "@types/mocha": "^10.0.3",
     "@types/node": "18.x",
     "@typescript-eslint/eslint-plugin": "^6.9.0",
@@ -251,6 +250,7 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
+    "@api/ideogram": "file:src/.api/apis/ideogram",
     "@azure/openai": "^1.0.0-beta.12",
     "@fal-ai/serverless-client": "^0.14.2",
     "openai": "^4.47.1"
