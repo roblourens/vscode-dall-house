@@ -1,0 +1,26 @@
+import type { FromSchema } from 'json-schema-to-ts';
+import * as schemas from './schemas';
+
+export type CreateApiKeyResponse200 = FromSchema<typeof schemas.CreateApiKey.response['200']>;
+export type DeleteSingleApiKeyMetadataParam = FromSchema<typeof schemas.DeleteSingleApiKey.metadata>;
+export type GetApiKeysResponse200 = FromSchema<typeof schemas.GetApiKeys.response['200']>;
+export type GetApiStripeSubscriptionMetadataParam = FromSchema<typeof schemas.GetApiStripeSubscription.metadata>;
+export type GetApiStripeSubscriptionResponse200 = FromSchema<typeof schemas.GetApiStripeSubscription.response['200']>;
+export type GetApiSubscriptionResponse200 = FromSchema<typeof schemas.GetApiSubscription.response['200']>;
+export type GetApiTermsResponse200 = FromSchema<typeof schemas.GetApiTerms.response['200']>;
+export type PostApiSubscriptionBodyParam = FromSchema<typeof schemas.PostApiSubscription.body>;
+export type PostApiSubscriptionResponse200 = FromSchema<typeof schemas.PostApiSubscription.response['200']>;
+export type PostApiSubscriptionResponse400 = FromSchema<typeof schemas.PostApiSubscription.response['400']>;
+export type PostApiTermsBodyParam = FromSchema<typeof schemas.PostApiTerms.body>;
+export type PostDescribeBodyParam = FromSchema<typeof schemas.PostDescribe.body>;
+export type PostDescribeResponse200 = FromSchema<typeof schemas.PostDescribe.response['200']>;
+export type PostDescribeResponse422 = FromSchema<typeof schemas.PostDescribe.response['422']>;
+export type PostGenerateImageBodyParam = FromSchema<typeof schemas.PostGenerateImage.body>;
+export type PostGenerateImageResponse200 = FromSchema<typeof schemas.PostGenerateImage.response['200']>;
+export type PostGenerateImageResponse422 = FromSchema<typeof schemas.PostGenerateImage.response['422']>;
+export type PostRemixImageBodyParam = FromSchema<typeof schemas.PostRemixImage.body>;
+export type PostRemixImageResponse200 = FromSchema<typeof schemas.PostRemixImage.response['200']>;
+export type PostRemixImageResponse422 = FromSchema<typeof schemas.PostRemixImage.response['422']>;
+export type PostUpscaleImageBodyParam = FromSchema<typeof schemas.PostUpscaleImage.body>;
+export type PostUpscaleImageResponse200 = FromSchema<typeof schemas.PostUpscaleImage.response['200']>;
+export type PostUpscaleImageResponse422 = FromSchema<typeof schemas.PostUpscaleImage.response['422']>;

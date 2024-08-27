@@ -1,0 +1,3799 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "description": "This is the API definition for Ideogram AI.",
+    "title": "Ideogram - OpenAPI 3.0",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.ideogram.ai"
+    }
+  ],
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "description": "All things related to generating content.",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "https://docs.ideogram.ai"
+      },
+      "name": "generate"
+    },
+    {
+      "description": "Content related to managing API account and API access",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "https://docs.ideogram.ai"
+      },
+      "name": "manage"
+    },
+    {
+      "description": "Operations related to understanding visual content",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "https://docs.ideogram.ai"
+      },
+      "name": "vision"
+    }
+  ],
+  "paths": {
+    "/describe": {
+      "post": {
+        "operationId": "post_describe",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "description": "An image binary; only JPEG, WEBPs and PNGs are supported at this time",
+                "properties": {
+                  "image_file": {
+                    "format": "binary",
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "The response for a describe request encapsulates a list of descriptions",
+                  "example": {
+                    "descriptions": [
+                      {
+                        "text": "A meticulously illustrated cat with striped patterns, sitting upright. The cat's eyes are a captivating shade of yellow, and it appears to be gazing intently at something. The background consists of abstract, swirling patterns in shades of black, white, and beige, creating an almost fluid or wavy appearance. The cat is positioned in the foreground, with the background elements fading into the distance, giving a sense of depth to the image."
+                      },
+                      {
+                        "text": "A meticulously illustrated cat with striped patterns, sitting upright. The cat's eyes are a captivating shade of yellow, and it appears to be gazing intently at something. The background consists of abstract, swirling patterns in shades of black, white, and beige, creating an almost fluid or wavy appearance. The cat is positioned in the foreground, with the background elements fading into the distance, giving a sense of depth to the image."
+                      }
+                    ]
+                  },
+                  "properties": {
+                    "descriptions": {
+                      "description": "A collection of descriptions for given content",
+                      "items": {
+                        "example": {
+                          "text": "A meticulously illustrated cat with striped patterns, sitting upright. The cat's eyes are a captivating shade of yellow, and it appears to be gazing intently at something. The background consists of abstract, swirling patterns in shades of black, white, and beige, creating an almost fluid or wavy appearance. The cat is positioned in the foreground, with the background elements fading into the distance, giving a sense of depth to the image."
+                        },
+                        "properties": {
+                          "text": {
+                            "description": "The generated description for the provided image.",
+                            "example": "A meticulously illustrated cat with striped patterns, sitting upright. The cat's eyes are a captivating shade of yellow, and it appears to be gazing intently at something. The background consists of abstract, swirling patterns in shades of black, white, and beige, creating an almost fluid or wavy appearance. The cat is positioned in the foreground, with the background elements fading into the distance, giving a sense of depth to the image.",
+                            "title": "text",
+                            "type": "string"
+                          }
+                        },
+                        "title": "Description",
+                        "type": "object"
+                      },
+                      "title": "descriptions",
+                      "type": "array"
+                    }
+                  },
+                  "title": "DescribeResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Description(s) created successfully."
+          },
+          "400": {
+            "description": "Invalid input provided."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "error": "Image provided failed safety check due to the inclusion of prohibited content."
+                  },
+                  "properties": {
+                    "error": {
+                      "example": "Image provided failed safety check due to the inclusion of prohibited content.",
+                      "title": "error",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "title": "ImageSafetyError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Image failed the safety check."
+          }
+        },
+        "summary": "Describe an image",
+        "tags": [
+          "vision"
+        ],
+        "x-openapi-router-controller": "external_api.generated.openapi.controllers.vision_controller"
+      }
+    },
+    "/generate": {
+      "post": {
+        "operationId": "post_generate_image",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "example": {
+                  "image_request": {
+                    "aspect_ratio": "ASPECT_10_16",
+                    "magic_prompt_option": "AUTO",
+                    "model": "V_1",
+                    "prompt": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there is an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset."
+                  }
+                },
+                "properties": {
+                  "image_request": {
+                    "example": {
+                      "aspect_ratio": "ASPECT_10_16",
+                      "magic_prompt_option": "AUTO",
+                      "model": "V_1",
+                      "prompt": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there is an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset."
+                    },
+                    "properties": {
+                      "prompt": {
+                        "description": "The prompt to use to generate the image.",
+                        "example": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there is an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset.",
+                        "type": "string"
+                      },
+                      "aspect_ratio": {
+                        "description": "(Cannot be used in conjunction with resolution) The aspect ratio to use for image generation, which determines the image's resolution. Defaults to ASPECT_1_1.",
+                        "enum": [
+                          "ASPECT_10_16",
+                          "ASPECT_16_10",
+                          "ASPECT_9_16",
+                          "ASPECT_16_9",
+                          "ASPECT_3_2",
+                          "ASPECT_2_3",
+                          "ASPECT_4_3",
+                          "ASPECT_3_4",
+                          "ASPECT_1_1",
+                          "ASPECT_1_3",
+                          "ASPECT_3_1"
+                        ],
+                        "example": "ASPECT_10_16",
+                        "externalDocs": {
+                          "url": "https://docs.ideogram.ai/usage/advanced-prompting/aspect-ratios"
+                        },
+                        "title": "AspectRatio",
+                        "type": "string"
+                      },
+                      "model": {
+                        "default": "V_2",
+                        "description": "The model used to generate. Defaults to V_2.",
+                        "enum": [
+                          "V_1",
+                          "V_1_TURBO",
+                          "V_2",
+                          "V_2_TURBO"
+                        ],
+                        "example": "V_1_TURBO",
+                        "title": "ModelEnum",
+                        "type": "string"
+                      },
+                      "magic_prompt_option": {
+                        "default": "AUTO",
+                        "description": "Determine if MagicPrompt should be used in generating the request or not",
+                        "enum": [
+                          "AUTO",
+                          "ON",
+                          "OFF"
+                        ],
+                        "example": "ON",
+                        "externalDocs": {
+                          "url": "https://docs.ideogram.ai/using-ideogram/ideogram-features/magic-prompt"
+                        },
+                        "title": "MagicPromptOption",
+                        "type": "string"
+                      },
+                      "seed": {
+                        "example": 12345,
+                        "maximum": 2147483647,
+                        "minimum": 0,
+                        "title": "Seed",
+                        "type": "integer"
+                      },
+                      "style_type": {
+                        "description": "The style type to generate with; this is only applicable for models V_2 and above and should not be specified for model versions V_1.",
+                        "enum": [
+                          "GENERAL",
+                          "REALISTIC",
+                          "DESIGN",
+                          "RENDER_3D",
+                          "ANIME"
+                        ],
+                        "example": "REALISTIC",
+                        "title": "StyleType",
+                        "type": "string"
+                      },
+                      "negative_prompt": {
+                        "description": "Description of what to exclude from an image. Descriptions in the prompt take precedence to descriptions in the negative prompt.",
+                        "example": "brush strokes, painting",
+                        "type": "string"
+                      },
+                      "resolution": {
+                        "description": "(For model_version for 2.0 only, cannot be used in conjunction with aspect_ratio) The resolution to use for image generation, represented in width x height. If not specified, defaults to using aspect_ratio.",
+                        "enum": [
+                          "RESOLUTION_512_1536",
+                          "RESOLUTION_576_1408",
+                          "RESOLUTION_576_1472",
+                          "RESOLUTION_576_1536",
+                          "RESOLUTION_640_1024",
+                          "RESOLUTION_640_1344",
+                          "RESOLUTION_640_1408",
+                          "RESOLUTION_640_1472",
+                          "RESOLUTION_640_1536",
+                          "RESOLUTION_704_1152",
+                          "RESOLUTION_704_1216",
+                          "RESOLUTION_704_1280",
+                          "RESOLUTION_704_1344",
+                          "RESOLUTION_704_1408",
+                          "RESOLUTION_704_1472",
+                          "RESOLUTION_720_1280",
+                          "RESOLUTION_736_1312",
+                          "RESOLUTION_768_1024",
+                          "RESOLUTION_768_1088",
+                          "RESOLUTION_768_1152",
+                          "RESOLUTION_768_1216",
+                          "RESOLUTION_768_1232",
+                          "RESOLUTION_768_1280",
+                          "RESOLUTION_768_1344",
+                          "RESOLUTION_832_960",
+                          "RESOLUTION_832_1024",
+                          "RESOLUTION_832_1088",
+                          "RESOLUTION_832_1152",
+                          "RESOLUTION_832_1216",
+                          "RESOLUTION_832_1248",
+                          "RESOLUTION_864_1152",
+                          "RESOLUTION_896_960",
+                          "RESOLUTION_896_1024",
+                          "RESOLUTION_896_1088",
+                          "RESOLUTION_896_1120",
+                          "RESOLUTION_896_1152",
+                          "RESOLUTION_960_832",
+                          "RESOLUTION_960_896",
+                          "RESOLUTION_960_1024",
+                          "RESOLUTION_960_1088",
+                          "RESOLUTION_1024_640",
+                          "RESOLUTION_1024_768",
+                          "RESOLUTION_1024_832",
+                          "RESOLUTION_1024_896",
+                          "RESOLUTION_1024_960",
+                          "RESOLUTION_1024_1024",
+                          "RESOLUTION_1088_768",
+                          "RESOLUTION_1088_832",
+                          "RESOLUTION_1088_896",
+                          "RESOLUTION_1088_960",
+                          "RESOLUTION_1120_896",
+                          "RESOLUTION_1152_704",
+                          "RESOLUTION_1152_768",
+                          "RESOLUTION_1152_832",
+                          "RESOLUTION_1152_864",
+                          "RESOLUTION_1152_896",
+                          "RESOLUTION_1216_704",
+                          "RESOLUTION_1216_768",
+                          "RESOLUTION_1216_832",
+                          "RESOLUTION_1232_768",
+                          "RESOLUTION_1248_832",
+                          "RESOLUTION_1280_704",
+                          "RESOLUTION_1280_720",
+                          "RESOLUTION_1280_768",
+                          "RESOLUTION_1280_800",
+                          "RESOLUTION_1312_736",
+                          "RESOLUTION_1344_640",
+                          "RESOLUTION_1344_704",
+                          "RESOLUTION_1344_768",
+                          "RESOLUTION_1408_576",
+                          "RESOLUTION_1408_640",
+                          "RESOLUTION_1408_704",
+                          "RESOLUTION_1472_576",
+                          "RESOLUTION_1472_640",
+                          "RESOLUTION_1472_704",
+                          "RESOLUTION_1536_512",
+                          "RESOLUTION_1536_576",
+                          "RESOLUTION_1536_640"
+                        ],
+                        "example": "RESOLUTION_1024_1024",
+                        "title": "Resolution",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "prompt"
+                    ],
+                    "title": "ImageRequest",
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "image_request"
+                ],
+                "title": "GenerateImageRequest",
+                "type": "object"
+              }
+            }
+          },
+          "description": "A request to generate an image with Ideogram.",
+          "required": true,
+          "x-body-name": "generate_image_request"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "data": [
+                      {
+                        "seed": 12345,
+                        "prompt": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there's an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset.",
+                        "resolution": "1024x1024",
+                        "url": "https://ideogram.ai/api/images/direct/8YEpFzHuS-S6xXEGmCsf7g",
+                        "is_image_safe": true
+                      },
+                      {
+                        "seed": 12345,
+                        "prompt": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there's an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset.",
+                        "resolution": "1024x1024",
+                        "url": "https://ideogram.ai/api/images/direct/8YEpFzHuS-S6xXEGmCsf7g",
+                        "is_image_safe": true
+                      }
+                    ],
+                    "created": "2000-01-23T04:56:07.000Z"
+                  },
+                  "properties": {
+                    "created": {
+                      "description": "The time the request was created.",
+                      "format": "date-time",
+                      "title": "created",
+                      "type": "string"
+                    },
+                    "data": {
+                      "description": "A list of ImageObjects that contain the generated image(s).",
+                      "items": {
+                        "example": {
+                          "seed": 12345,
+                          "prompt": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there's an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset.",
+                          "resolution": "1024x1024",
+                          "url": "https://ideogram.ai/api/images/direct/8YEpFzHuS-S6xXEGmCsf7g",
+                          "is_image_safe": true
+                        },
+                        "properties": {
+                          "url": {
+                            "description": "The direct link to the image generated.",
+                            "example": "https://ideogram.ai/api/images/direct/8YEpFzHuS-S6xXEGmCsf7g",
+                            "format": "uri",
+                            "nullable": true,
+                            "title": "url",
+                            "type": "string"
+                          },
+                          "prompt": {
+                            "description": "The prompt used for the generation. This may be different from the original prompt.",
+                            "example": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there's an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset.",
+                            "title": "prompt",
+                            "type": "string"
+                          },
+                          "resolution": {
+                            "description": "The resolution of the final image.",
+                            "example": "1024x1024",
+                            "title": "resolution",
+                            "type": "string"
+                          },
+                          "is_image_safe": {
+                            "description": "Whether this request passes safety checks. If false, the url field will be empty.",
+                            "title": "is_image_safe",
+                            "type": "boolean"
+                          },
+                          "seed": {
+                            "example": 12345,
+                            "maximum": 2147483647,
+                            "minimum": 0,
+                            "title": "Seed",
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "is_image_safe",
+                          "prompt",
+                          "resolution",
+                          "seed"
+                        ],
+                        "title": "ImageObject",
+                        "type": "object"
+                      },
+                      "title": "data",
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "created",
+                    "data"
+                  ],
+                  "title": "GenerateImageResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Image(s) generated successfully."
+          },
+          "400": {
+            "description": "Invalid input provided."
+          },
+          "401": {
+            "description": "Not authorized to generate an image."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "error": "Prompt provided failed safety check due to the inclusion of prohibited content."
+                  },
+                  "properties": {
+                    "error": {
+                      "example": "Prompt provided failed safety check due to the inclusion of prohibited content.",
+                      "title": "error",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "title": "GenerateImageSafetyError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Prompt failed the safety check."
+          }
+        },
+        "summary": "Generates images synchronously based on a given prompt and optional parameters.",
+        "tags": [
+          "generate"
+        ],
+        "x-openapi-router-controller": "external_api.generated.openapi.controllers.generate_controller"
+      }
+    },
+    "/manage/api/api_keys": {
+      "get": {
+        "operationId": "get_api_keys",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "current_api_keys": [
+                      {
+                        "creation_time": "2000-01-23T04:56:07.000Z",
+                        "redacted_api_key": "vkpDja",
+                        "api_key_id": "JRPVD7jWR1aTBYiJ0UFVOg=="
+                      },
+                      {
+                        "creation_time": "2000-01-23T04:56:07.000Z",
+                        "redacted_api_key": "vkpDja",
+                        "api_key_id": "JRPVD7jWR1aTBYiJ0UFVOg=="
+                      }
+                    ]
+                  },
+                  "properties": {
+                    "current_api_keys": {
+                      "default": [],
+                      "description": "The current API keys that are active. Only returns redacted keys.",
+                      "items": {
+                        "description": "A representation of an API key that does not contain the full key.",
+                        "example": {
+                          "creation_time": "2000-01-23T04:56:07.000Z",
+                          "redacted_api_key": "vkpDja",
+                          "api_key_id": "JRPVD7jWR1aTBYiJ0UFVOg=="
+                        },
+                        "properties": {
+                          "redacted_api_key": {
+                            "description": "A redacted text snippet of the API key. Contains the first 4 characters of the API key",
+                            "example": "vkpDja",
+                            "title": "redacted_api_key",
+                            "type": "string"
+                          },
+                          "creation_time": {
+                            "description": "The time at which the key was created",
+                            "format": "date-time",
+                            "title": "creation_time",
+                            "type": "string"
+                          },
+                          "api_key_id": {
+                            "description": "A URL safe base64 encoded UUID",
+                            "example": "JRPVD7jWR1aTBYiJ0UFVOg==",
+                            "title": "api_key_id",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "api_key_id",
+                          "creation_time",
+                          "redacted_api_key"
+                        ],
+                        "title": "RedactedApiKey",
+                        "type": "object"
+                      },
+                      "title": "current_api_keys",
+                      "type": "array"
+                    }
+                  },
+                  "title": "GetApiKeysResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "API keys the user currently manages"
+          },
+          "401": {
+            "description": "Not authorized"
+          },
+          "403": {
+            "description": "Not authorized"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Retrieve current API keys and their respective data.",
+        "tags": [
+          "manage"
+        ],
+        "x-openapi-router-controller": "external_api.generated.openapi.controllers.manage_controller"
+      },
+      "post": {
+        "operationId": "create_api_key",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "api_key": "vkpDjaKdMNR8QJ83GjfNvFZJbnoi65XUp70MgZNtA2H9XE8yfDnmr_6BaRyQkF9hnJzu6mUPRLBmqlnZMwetJA",
+                    "api_key_id": "JRPVD7jWR1aTBYiJ0UFVOg=="
+                  },
+                  "properties": {
+                    "api_key": {
+                      "description": "The API key to use when making authenticated requests with the API. This key will only be shown once.",
+                      "example": "vkpDjaKdMNR8QJ83GjfNvFZJbnoi65XUp70MgZNtA2H9XE8yfDnmr_6BaRyQkF9hnJzu6mUPRLBmqlnZMwetJA",
+                      "title": "api_key",
+                      "type": "string"
+                    },
+                    "api_key_id": {
+                      "description": "The ID of the API key. A URL safe base64 encoded UUID",
+                      "example": "JRPVD7jWR1aTBYiJ0UFVOg==",
+                      "title": "api_key_id",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "api_key",
+                    "api_key_id"
+                  ],
+                  "title": "PostApiKeyResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "The newly created API key"
+          },
+          "401": {
+            "description": "Not authorized"
+          },
+          "402": {
+            "description": "Payment is required; did you create a subscription?"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Creates an API key.",
+        "tags": [
+          "manage"
+        ],
+        "x-openapi-router-controller": "external_api.generated.openapi.controllers.manage_controller"
+      }
+    },
+    "/manage/api/api_keys/{api_key_id}": {
+      "delete": {
+        "operationId": "delete_single_api_key",
+        "parameters": [
+          {
+            "description": "The ID of API key to operate on. Expected to be a URL safe Base64 encoded UUID.",
+            "example": "d7abd0cd4ae94db78676e986a4ebd8dc",
+            "in": "path",
+            "name": "api_key_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Something went wrong"
+          },
+          "401": {
+            "description": "Not authorized"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Delete an API key.",
+        "tags": [
+          "manage"
+        ],
+        "x-openapi-router-controller": "external_api.generated.openapi.controllers.manage_controller"
+      }
+    },
+    "/manage/api/stripe_subscription": {
+      "get": {
+        "operationId": "get_api_stripe_subscription",
+        "parameters": [
+          {
+            "description": "Whether the subscription is intended to be used for business or personal use.",
+            "in": "query",
+            "name": "isBusiness",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "stripe_subscription_url": "stripe_subscription_url",
+                    "stripe_billing_url": "stripe_billing_url"
+                  },
+                  "properties": {
+                    "stripe_subscription_url": {
+                      "description": "The URL for the user to checkout the Stripe subscription plan.",
+                      "title": "stripe_subscription_url",
+                      "type": "string"
+                    },
+                    "stripe_billing_url": {
+                      "deprecated": true,
+                      "description": "DEPRECATED. The URL for the user to manage the existing Stripe subscription plan. Get this from ManageApiSubscriptionResponse instead.",
+                      "title": "stripe_billing_url",
+                      "type": "string"
+                    }
+                  },
+                  "title": "ManageApiStripeSubscriptionResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "API subscription content related to connecting to Stripe"
+          },
+          "401": {
+            "description": "Not authorized"
+          },
+          "403": {
+            "description": "Not authorized"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Retrieve data relevant to connecting to Stripe.",
+        "tags": [
+          "manage"
+        ],
+        "x-openapi-router-controller": "external_api.generated.openapi.controllers.manage_controller"
+      }
+    },
+    "/manage/api/subscription": {
+      "get": {
+        "operationId": "get_api_subscription",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "recharge_settings": {
+                      "minimum_balance_threshold": {
+                        "amount": 1050,
+                        "currency_code": "USD"
+                      },
+                      "top_up_balance": {
+                        "amount": 1050,
+                        "currency_code": "USD"
+                      }
+                    },
+                    "has_stripe_setup": true,
+                    "metronome_dashboard_dark_mode_url": "metronome_dashboard_dark_mode_url",
+                    "stripe_billing_url": "stripe_billing_url",
+                    "has_accepted_terms": true,
+                    "metronome_dashboard_url": "metronome_dashboard_url"
+                  },
+                  "properties": {
+                    "has_accepted_terms": {
+                      "description": "Whether or not the latest required terms have been accepted.",
+                      "title": "has_accepted_terms",
+                      "type": "boolean"
+                    },
+                    "has_stripe_setup": {
+                      "description": "Whether or not Stripe is setup for API usage.",
+                      "title": "has_stripe_setup",
+                      "type": "boolean"
+                    },
+                    "metronome_dashboard_url": {
+                      "description": "The URL to display the customer usage dashboard.",
+                      "title": "metronome_dashboard_url",
+                      "type": "string"
+                    },
+                    "metronome_dashboard_dark_mode_url": {
+                      "description": "The URL to display the customer usage dashboard, in dark mode.",
+                      "title": "metronome_dashboard_dark_mode_url",
+                      "type": "string"
+                    },
+                    "recharge_settings": {
+                      "description": "The current recharge settings for the API subscription.",
+                      "example": {
+                        "minimum_balance_threshold": {
+                          "amount": 1050,
+                          "currency_code": "USD"
+                        },
+                        "top_up_balance": {
+                          "amount": 1050,
+                          "currency_code": "USD"
+                        }
+                      },
+                      "properties": {
+                        "top_up_balance": {
+                          "description": "Represents a price.",
+                          "example": {
+                            "amount": 1050,
+                            "currency_code": "USD"
+                          },
+                          "properties": {
+                            "currency_code": {
+                              "description": "The ISO 4217 currency code for the price object.",
+                              "example": "USD",
+                              "title": "currency_code",
+                              "type": "string"
+                            },
+                            "amount": {
+                              "description": "The amount of the currency in the common denomination. For example, in USD this is cents.",
+                              "example": 1050,
+                              "title": "amount",
+                              "type": "number"
+                            }
+                          },
+                          "title": "Price",
+                          "type": "object"
+                        },
+                        "minimum_balance_threshold": {
+                          "description": "Represents a price.",
+                          "example": {
+                            "amount": 1050,
+                            "currency_code": "USD"
+                          },
+                          "properties": {
+                            "currency_code": {
+                              "description": "The ISO 4217 currency code for the price object.",
+                              "example": "USD",
+                              "title": "currency_code",
+                              "type": "string"
+                            },
+                            "amount": {
+                              "description": "The amount of the currency in the common denomination. For example, in USD this is cents.",
+                              "example": 1050,
+                              "title": "amount",
+                              "type": "number"
+                            }
+                          },
+                          "title": "Price",
+                          "type": "object"
+                        }
+                      },
+                      "required": [
+                        "minimum_balance_threshold",
+                        "top_up_balance"
+                      ],
+                      "title": "RechargeSettings",
+                      "type": "object"
+                    },
+                    "stripe_billing_url": {
+                      "description": "The URL for the user to manage the existing Stripe subscription plan.",
+                      "title": "stripe_billing_url",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "has_accepted_terms",
+                    "has_stripe_setup"
+                  ],
+                  "title": "ManageApiSubscriptionResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "API subscription content"
+          },
+          "401": {
+            "description": "Not authorized"
+          },
+          "403": {
+            "description": "Not authorized"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Retrieve data relevant to creating an API subscription.",
+        "tags": [
+          "manage"
+        ],
+        "x-openapi-router-controller": "external_api.generated.openapi.controllers.manage_controller"
+      },
+      "post": {
+        "operationId": "post_api_subscription",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "Request to update API settings. Fields which are omitted will be ignored.",
+                "example": {
+                  "recharge_settings": {
+                    "minimum_balance_threshold": {
+                      "amount": 1050,
+                      "currency_code": "USD"
+                    },
+                    "top_up_balance": {
+                      "amount": 1050,
+                      "currency_code": "USD"
+                    }
+                  }
+                },
+                "properties": {
+                  "recharge_settings": {
+                    "description": "The current recharge settings for the API subscription.",
+                    "example": {
+                      "minimum_balance_threshold": {
+                        "amount": 1050,
+                        "currency_code": "USD"
+                      },
+                      "top_up_balance": {
+                        "amount": 1050,
+                        "currency_code": "USD"
+                      }
+                    },
+                    "properties": {
+                      "top_up_balance": {
+                        "description": "Represents a price.",
+                        "example": {
+                          "amount": 1050,
+                          "currency_code": "USD"
+                        },
+                        "properties": {
+                          "currency_code": {
+                            "description": "The ISO 4217 currency code for the price object.",
+                            "example": "USD",
+                            "title": "currency_code",
+                            "type": "string"
+                          },
+                          "amount": {
+                            "description": "The amount of the currency in the common denomination. For example, in USD this is cents.",
+                            "example": 1050,
+                            "title": "amount",
+                            "type": "number"
+                          }
+                        },
+                        "title": "Price",
+                        "type": "object"
+                      },
+                      "minimum_balance_threshold": {
+                        "description": "Represents a price.",
+                        "example": {
+                          "amount": 1050,
+                          "currency_code": "USD"
+                        },
+                        "properties": {
+                          "currency_code": {
+                            "description": "The ISO 4217 currency code for the price object.",
+                            "example": "USD",
+                            "title": "currency_code",
+                            "type": "string"
+                          },
+                          "amount": {
+                            "description": "The amount of the currency in the common denomination. For example, in USD this is cents.",
+                            "example": 1050,
+                            "title": "amount",
+                            "type": "number"
+                          }
+                        },
+                        "title": "Price",
+                        "type": "object"
+                      }
+                    },
+                    "required": [
+                      "minimum_balance_threshold",
+                      "top_up_balance"
+                    ],
+                    "title": "RechargeSettings",
+                    "type": "object"
+                  }
+                },
+                "title": "PostApiSubscriptionRequest",
+                "type": "object"
+              }
+            }
+          },
+          "description": "A request to update the API subscription properties. This should only be called after terms have been accepted.",
+          "required": true,
+          "x-body-name": "post_api_subscription_request"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "The updated API subscription.",
+                  "example": {
+                    "recharge_settings": {
+                      "minimum_balance_threshold": {
+                        "amount": 1050,
+                        "currency_code": "USD"
+                      },
+                      "top_up_balance": {
+                        "amount": 1050,
+                        "currency_code": "USD"
+                      }
+                    }
+                  },
+                  "properties": {
+                    "recharge_settings": {
+                      "description": "The current recharge settings for the API subscription.",
+                      "example": {
+                        "minimum_balance_threshold": {
+                          "amount": 1050,
+                          "currency_code": "USD"
+                        },
+                        "top_up_balance": {
+                          "amount": 1050,
+                          "currency_code": "USD"
+                        }
+                      },
+                      "properties": {
+                        "top_up_balance": {
+                          "description": "Represents a price.",
+                          "example": {
+                            "amount": 1050,
+                            "currency_code": "USD"
+                          },
+                          "properties": {
+                            "currency_code": {
+                              "description": "The ISO 4217 currency code for the price object.",
+                              "example": "USD",
+                              "title": "currency_code",
+                              "type": "string"
+                            },
+                            "amount": {
+                              "description": "The amount of the currency in the common denomination. For example, in USD this is cents.",
+                              "example": 1050,
+                              "title": "amount",
+                              "type": "number"
+                            }
+                          },
+                          "title": "Price",
+                          "type": "object"
+                        },
+                        "minimum_balance_threshold": {
+                          "description": "Represents a price.",
+                          "example": {
+                            "amount": 1050,
+                            "currency_code": "USD"
+                          },
+                          "properties": {
+                            "currency_code": {
+                              "description": "The ISO 4217 currency code for the price object.",
+                              "example": "USD",
+                              "title": "currency_code",
+                              "type": "string"
+                            },
+                            "amount": {
+                              "description": "The amount of the currency in the common denomination. For example, in USD this is cents.",
+                              "example": 1050,
+                              "title": "amount",
+                              "type": "number"
+                            }
+                          },
+                          "title": "Price",
+                          "type": "object"
+                        }
+                      },
+                      "required": [
+                        "minimum_balance_threshold",
+                        "top_up_balance"
+                      ],
+                      "title": "RechargeSettings",
+                      "type": "object"
+                    }
+                  },
+                  "title": "PostApiSubscriptionResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "API subscription content"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Represents an error when attempting to update the API subscription.",
+                  "example": {
+                    "messages": [
+                      "messages",
+                      "messages"
+                    ]
+                  },
+                  "properties": {
+                    "messages": {
+                      "description": "Error messages about what the error could be.",
+                      "items": {
+                        "description": "An error message, indicating what went wrong.",
+                        "type": "string"
+                      },
+                      "title": "messages",
+                      "type": "array"
+                    }
+                  },
+                  "title": "PostApiSubscriptionError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Not authorized"
+          },
+          "403": {
+            "description": "Not authorized"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Update API subscription settings",
+        "tags": [
+          "manage"
+        ],
+        "x-openapi-router-controller": "external_api.generated.openapi.controllers.manage_controller"
+      }
+    },
+    "/manage/api/terms": {
+      "get": {
+        "operationId": "get_api_terms",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "api_terms": {
+                      "terms_url": "terms_url",
+                      "terms_id": "terms_id"
+                    }
+                  },
+                  "properties": {
+                    "api_terms": {
+                      "example": {
+                        "terms_url": "terms_url",
+                        "terms_id": "terms_id"
+                      },
+                      "properties": {
+                        "terms_id": {
+                          "description": "The ID of the terms.",
+                          "title": "terms_id",
+                          "type": "string"
+                        },
+                        "terms_url": {
+                          "description": "The URL where the terms are hosted.",
+                          "title": "terms_url",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "terms_id",
+                        "terms_url"
+                      ],
+                      "title": "ApiTerms",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "api_terms"
+                  ],
+                  "title": "GetApiTermsResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Retrieves the latest API terms"
+          },
+          "401": {
+            "description": "Not authorized"
+          },
+          "403": {
+            "description": "Not authorized"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Retrieve the latest terms of service for API usage.",
+        "tags": [
+          "manage"
+        ],
+        "x-openapi-router-controller": "external_api.generated.openapi.controllers.manage_controller"
+      },
+      "post": {
+        "operationId": "post_api_terms",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "example": {
+                  "terms_id": "TOS_2024_04_20"
+                },
+                "properties": {
+                  "terms_id": {
+                    "description": "The ID of the terms which are being accepted.",
+                    "example": "TOS_2024_04_20",
+                    "title": "terms_id",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "terms_id"
+                ],
+                "title": "PostApiTermsRequest",
+                "type": "object"
+              }
+            }
+          },
+          "description": "A request to accept the API terms.",
+          "required": true,
+          "x-body-name": "post_api_terms_request"
+        },
+        "responses": {
+          "204": {
+            "description": "Success; no content."
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Not authorized"
+          },
+          "403": {
+            "description": "Not authorized"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Accept terms",
+        "tags": [
+          "manage"
+        ],
+        "x-openapi-router-controller": "external_api.generated.openapi.controllers.manage_controller"
+      }
+    },
+    "/remix": {
+      "post": {
+        "operationId": "post_remix_image",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "encoding": {
+                "image_request": {
+                  "contentType": "application/json",
+                  "style": "form"
+                }
+              },
+              "schema": {
+                "description": "A request to generate an image from a source image and a provided caption, provided images are cropped to match the chosen output aspect ratio",
+                "properties": {
+                  "image_request": {
+                    "allOf": [
+                      {
+                        "example": {
+                          "aspect_ratio": "ASPECT_10_16",
+                          "magic_prompt_option": "AUTO",
+                          "model": "V_1",
+                          "prompt": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there is an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset."
+                        },
+                        "properties": {
+                          "prompt": {
+                            "description": "The prompt to use to generate the image.",
+                            "example": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there is an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset.",
+                            "type": "string"
+                          },
+                          "aspect_ratio": {
+                            "description": "(Cannot be used in conjunction with resolution) The aspect ratio to use for image generation, which determines the image's resolution. Defaults to ASPECT_1_1.",
+                            "enum": [
+                              "ASPECT_10_16",
+                              "ASPECT_16_10",
+                              "ASPECT_9_16",
+                              "ASPECT_16_9",
+                              "ASPECT_3_2",
+                              "ASPECT_2_3",
+                              "ASPECT_4_3",
+                              "ASPECT_3_4",
+                              "ASPECT_1_1",
+                              "ASPECT_1_3",
+                              "ASPECT_3_1"
+                            ],
+                            "example": "ASPECT_10_16",
+                            "externalDocs": {
+                              "url": "https://docs.ideogram.ai/usage/advanced-prompting/aspect-ratios"
+                            },
+                            "title": "AspectRatio",
+                            "type": "string"
+                          },
+                          "model": {
+                            "default": "V_2",
+                            "description": "The model used to generate. Defaults to V_2.",
+                            "enum": [
+                              "V_1",
+                              "V_1_TURBO",
+                              "V_2",
+                              "V_2_TURBO"
+                            ],
+                            "example": "V_1_TURBO",
+                            "title": "ModelEnum",
+                            "type": "string"
+                          },
+                          "magic_prompt_option": {
+                            "default": "AUTO",
+                            "description": "Determine if MagicPrompt should be used in generating the request or not",
+                            "enum": [
+                              "AUTO",
+                              "ON",
+                              "OFF"
+                            ],
+                            "example": "ON",
+                            "externalDocs": {
+                              "url": "https://docs.ideogram.ai/using-ideogram/ideogram-features/magic-prompt"
+                            },
+                            "title": "MagicPromptOption",
+                            "type": "string"
+                          },
+                          "seed": {
+                            "example": 12345,
+                            "maximum": 2147483647,
+                            "minimum": 0,
+                            "title": "Seed",
+                            "type": "integer"
+                          },
+                          "style_type": {
+                            "description": "The style type to generate with; this is only applicable for models V_2 and above and should not be specified for model versions V_1.",
+                            "enum": [
+                              "GENERAL",
+                              "REALISTIC",
+                              "DESIGN",
+                              "RENDER_3D",
+                              "ANIME"
+                            ],
+                            "example": "REALISTIC",
+                            "title": "StyleType",
+                            "type": "string"
+                          },
+                          "negative_prompt": {
+                            "description": "Description of what to exclude from an image. Descriptions in the prompt take precedence to descriptions in the negative prompt.",
+                            "example": "brush strokes, painting",
+                            "type": "string"
+                          },
+                          "resolution": {
+                            "description": "(For model_version for 2.0 only, cannot be used in conjunction with aspect_ratio) The resolution to use for image generation, represented in width x height. If not specified, defaults to using aspect_ratio.",
+                            "enum": [
+                              "RESOLUTION_512_1536",
+                              "RESOLUTION_576_1408",
+                              "RESOLUTION_576_1472",
+                              "RESOLUTION_576_1536",
+                              "RESOLUTION_640_1024",
+                              "RESOLUTION_640_1344",
+                              "RESOLUTION_640_1408",
+                              "RESOLUTION_640_1472",
+                              "RESOLUTION_640_1536",
+                              "RESOLUTION_704_1152",
+                              "RESOLUTION_704_1216",
+                              "RESOLUTION_704_1280",
+                              "RESOLUTION_704_1344",
+                              "RESOLUTION_704_1408",
+                              "RESOLUTION_704_1472",
+                              "RESOLUTION_720_1280",
+                              "RESOLUTION_736_1312",
+                              "RESOLUTION_768_1024",
+                              "RESOLUTION_768_1088",
+                              "RESOLUTION_768_1152",
+                              "RESOLUTION_768_1216",
+                              "RESOLUTION_768_1232",
+                              "RESOLUTION_768_1280",
+                              "RESOLUTION_768_1344",
+                              "RESOLUTION_832_960",
+                              "RESOLUTION_832_1024",
+                              "RESOLUTION_832_1088",
+                              "RESOLUTION_832_1152",
+                              "RESOLUTION_832_1216",
+                              "RESOLUTION_832_1248",
+                              "RESOLUTION_864_1152",
+                              "RESOLUTION_896_960",
+                              "RESOLUTION_896_1024",
+                              "RESOLUTION_896_1088",
+                              "RESOLUTION_896_1120",
+                              "RESOLUTION_896_1152",
+                              "RESOLUTION_960_832",
+                              "RESOLUTION_960_896",
+                              "RESOLUTION_960_1024",
+                              "RESOLUTION_960_1088",
+                              "RESOLUTION_1024_640",
+                              "RESOLUTION_1024_768",
+                              "RESOLUTION_1024_832",
+                              "RESOLUTION_1024_896",
+                              "RESOLUTION_1024_960",
+                              "RESOLUTION_1024_1024",
+                              "RESOLUTION_1088_768",
+                              "RESOLUTION_1088_832",
+                              "RESOLUTION_1088_896",
+                              "RESOLUTION_1088_960",
+                              "RESOLUTION_1120_896",
+                              "RESOLUTION_1152_704",
+                              "RESOLUTION_1152_768",
+                              "RESOLUTION_1152_832",
+                              "RESOLUTION_1152_864",
+                              "RESOLUTION_1152_896",
+                              "RESOLUTION_1216_704",
+                              "RESOLUTION_1216_768",
+                              "RESOLUTION_1216_832",
+                              "RESOLUTION_1232_768",
+                              "RESOLUTION_1248_832",
+                              "RESOLUTION_1280_704",
+                              "RESOLUTION_1280_720",
+                              "RESOLUTION_1280_768",
+                              "RESOLUTION_1280_800",
+                              "RESOLUTION_1312_736",
+                              "RESOLUTION_1344_640",
+                              "RESOLUTION_1344_704",
+                              "RESOLUTION_1344_768",
+                              "RESOLUTION_1408_576",
+                              "RESOLUTION_1408_640",
+                              "RESOLUTION_1408_704",
+                              "RESOLUTION_1472_576",
+                              "RESOLUTION_1472_640",
+                              "RESOLUTION_1472_704",
+                              "RESOLUTION_1536_512",
+                              "RESOLUTION_1536_576",
+                              "RESOLUTION_1536_640"
+                            ],
+                            "example": "RESOLUTION_1024_1024",
+                            "title": "Resolution",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "prompt"
+                        ],
+                        "title": "ImageRequest",
+                        "type": "object"
+                      }
+                    ],
+                    "description": "A request to generate a new image using a provided image and a prompt.",
+                    "example": {
+                      "aspect_ratio": "ASPECT_10_16",
+                      "magic_prompt_option": "ON",
+                      "model": "V_1",
+                      "prompt": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there is an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset.",
+                      "image_weight": 50
+                    },
+                    "properties": {
+                      "image_weight": {
+                        "default": 50,
+                        "example": 50,
+                        "maximum": 100,
+                        "minimum": 1,
+                        "type": "integer"
+                      }
+                    },
+                    "title": "InitialImageRequest",
+                    "type": "object"
+                  },
+                  "image_file": {
+                    "description": "An image binary; only JPEG, WEBPs and PNGs are supported at this time",
+                    "format": "binary",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "image_file",
+                  "image_request"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "description": "A request to remix a provided image with Ideogram. Input images are cropped to the chosen aspect ratio before being remixed.",
+          "required": true,
+          "x-body-name": "image_request"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "data": [
+                      {
+                        "seed": 12345,
+                        "prompt": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there's an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset.",
+                        "resolution": "1024x1024",
+                        "url": "https://ideogram.ai/api/images/direct/8YEpFzHuS-S6xXEGmCsf7g",
+                        "is_image_safe": true
+                      },
+                      {
+                        "seed": 12345,
+                        "prompt": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there's an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset.",
+                        "resolution": "1024x1024",
+                        "url": "https://ideogram.ai/api/images/direct/8YEpFzHuS-S6xXEGmCsf7g",
+                        "is_image_safe": true
+                      }
+                    ],
+                    "created": "2000-01-23T04:56:07.000Z"
+                  },
+                  "properties": {
+                    "created": {
+                      "description": "The time the request was created.",
+                      "format": "date-time",
+                      "title": "created",
+                      "type": "string"
+                    },
+                    "data": {
+                      "description": "A list of ImageObjects that contain the generated image(s).",
+                      "items": {
+                        "example": {
+                          "seed": 12345,
+                          "prompt": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there's an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset.",
+                          "resolution": "1024x1024",
+                          "url": "https://ideogram.ai/api/images/direct/8YEpFzHuS-S6xXEGmCsf7g",
+                          "is_image_safe": true
+                        },
+                        "properties": {
+                          "url": {
+                            "description": "The direct link to the image generated.",
+                            "example": "https://ideogram.ai/api/images/direct/8YEpFzHuS-S6xXEGmCsf7g",
+                            "format": "uri",
+                            "nullable": true,
+                            "title": "url",
+                            "type": "string"
+                          },
+                          "prompt": {
+                            "description": "The prompt used for the generation. This may be different from the original prompt.",
+                            "example": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there's an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset.",
+                            "title": "prompt",
+                            "type": "string"
+                          },
+                          "resolution": {
+                            "description": "The resolution of the final image.",
+                            "example": "1024x1024",
+                            "title": "resolution",
+                            "type": "string"
+                          },
+                          "is_image_safe": {
+                            "description": "Whether this request passes safety checks. If false, the url field will be empty.",
+                            "title": "is_image_safe",
+                            "type": "boolean"
+                          },
+                          "seed": {
+                            "example": 12345,
+                            "maximum": 2147483647,
+                            "minimum": 0,
+                            "title": "Seed",
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "is_image_safe",
+                          "prompt",
+                          "resolution",
+                          "seed"
+                        ],
+                        "title": "ImageObject",
+                        "type": "object"
+                      },
+                      "title": "data",
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "created",
+                    "data"
+                  ],
+                  "title": "GenerateImageResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Image(s) generated successfully"
+          },
+          "400": {
+            "description": "Invalid input provided"
+          },
+          "403": {
+            "description": "Not authorized to generate an image."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "error": "Prompt provided failed safety check due to the inclusion of prohibited content."
+                  },
+                  "properties": {
+                    "error": {
+                      "example": "Prompt provided failed safety check due to the inclusion of prohibited content.",
+                      "title": "error",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "title": "GenerateImageSafetyError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Prompt or provided image failed safety check."
+          }
+        },
+        "summary": "Remix provided images synchronously based on a given prompt and optional parameters",
+        "tags": [
+          "generate"
+        ],
+        "x-openapi-router-controller": "external_api.generated.openapi.controllers.generate_controller"
+      }
+    },
+    "/upscale": {
+      "post": {
+        "operationId": "post_upscale_image",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "encoding": {
+                "image_request": {
+                  "contentType": "application/json",
+                  "style": "form"
+                }
+              },
+              "schema": {
+                "properties": {
+                  "image_request": {
+                    "description": "A request to upscale a provided image with the help of an optional prompt.",
+                    "properties": {
+                      "prompt": {
+                        "description": "An optional prompt to guide the upscale",
+                        "example": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there is an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset.",
+                        "title": "prompt",
+                        "type": "string"
+                      },
+                      "resemblance": {
+                        "default": 50,
+                        "example": 50,
+                        "maximum": 100,
+                        "minimum": 1,
+                        "title": "resemblance",
+                        "type": "integer"
+                      },
+                      "detail": {
+                        "default": 50,
+                        "example": 50,
+                        "maximum": 100,
+                        "minimum": 1,
+                        "title": "detail",
+                        "type": "integer"
+                      },
+                      "magic_prompt_option": {
+                        "default": "AUTO",
+                        "description": "Determine if MagicPrompt should be used in generating the request or not",
+                        "enum": [
+                          "AUTO",
+                          "ON",
+                          "OFF"
+                        ],
+                        "example": "ON",
+                        "externalDocs": {
+                          "url": "https://docs.ideogram.ai/using-ideogram/ideogram-features/magic-prompt"
+                        },
+                        "title": "MagicPromptOption",
+                        "type": "string"
+                      },
+                      "seed": {
+                        "example": 12345,
+                        "maximum": 2147483647,
+                        "minimum": 0,
+                        "title": "Seed",
+                        "type": "integer"
+                      }
+                    },
+                    "title": "UpscaleInitialImageRequest",
+                    "type": "object"
+                  },
+                  "image_file": {
+                    "description": "An image binary; only JPEG, WEBPs and PNGs are supported at this time",
+                    "format": "binary",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "image_file",
+                  "image_request"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "description": "A request to upscale a provided image with Ideogram.",
+          "required": true,
+          "x-body-name": "image_request"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "data": [
+                      {
+                        "seed": 12345,
+                        "prompt": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there's an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset.",
+                        "resolution": "1024x1024",
+                        "url": "https://ideogram.ai/api/images/direct/8YEpFzHuS-S6xXEGmCsf7g",
+                        "is_image_safe": true
+                      },
+                      {
+                        "seed": 12345,
+                        "prompt": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there's an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset.",
+                        "resolution": "1024x1024",
+                        "url": "https://ideogram.ai/api/images/direct/8YEpFzHuS-S6xXEGmCsf7g",
+                        "is_image_safe": true
+                      }
+                    ],
+                    "created": "2000-01-23T04:56:07.000Z"
+                  },
+                  "properties": {
+                    "created": {
+                      "description": "The time the request was created.",
+                      "format": "date-time",
+                      "title": "created",
+                      "type": "string"
+                    },
+                    "data": {
+                      "description": "A list of ImageObjects that contain the generated image(s).",
+                      "items": {
+                        "example": {
+                          "seed": 12345,
+                          "prompt": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there's an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset.",
+                          "resolution": "1024x1024",
+                          "url": "https://ideogram.ai/api/images/direct/8YEpFzHuS-S6xXEGmCsf7g",
+                          "is_image_safe": true
+                        },
+                        "properties": {
+                          "url": {
+                            "description": "The direct link to the image generated.",
+                            "example": "https://ideogram.ai/api/images/direct/8YEpFzHuS-S6xXEGmCsf7g",
+                            "format": "uri",
+                            "nullable": true,
+                            "title": "url",
+                            "type": "string"
+                          },
+                          "prompt": {
+                            "description": "The prompt used for the generation. This may be different from the original prompt.",
+                            "example": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there's an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset.",
+                            "title": "prompt",
+                            "type": "string"
+                          },
+                          "resolution": {
+                            "description": "The resolution of the final image.",
+                            "example": "1024x1024",
+                            "title": "resolution",
+                            "type": "string"
+                          },
+                          "is_image_safe": {
+                            "description": "Whether this request passes safety checks. If false, the url field will be empty.",
+                            "title": "is_image_safe",
+                            "type": "boolean"
+                          },
+                          "seed": {
+                            "example": 12345,
+                            "maximum": 2147483647,
+                            "minimum": 0,
+                            "title": "Seed",
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "is_image_safe",
+                          "prompt",
+                          "resolution",
+                          "seed"
+                        ],
+                        "title": "ImageObject",
+                        "type": "object"
+                      },
+                      "title": "data",
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "created",
+                    "data"
+                  ],
+                  "title": "GenerateImageResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Image(s) generated successfully"
+          },
+          "400": {
+            "description": "Invalid input provided"
+          },
+          "403": {
+            "description": "Not authorized to generate an image."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "error": "Prompt provided failed safety check due to the inclusion of prohibited content."
+                  },
+                  "properties": {
+                    "error": {
+                      "example": "Prompt provided failed safety check due to the inclusion of prohibited content.",
+                      "title": "error",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "title": "GenerateImageSafetyError",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Prompt or provided image failed safety check."
+          }
+        },
+        "summary": "Upscale provided images synchronously with an optional prompt.",
+        "tags": [
+          "generate"
+        ],
+        "x-openapi-router-controller": "external_api.generated.openapi.controllers.generate_controller"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "DescribeResponse": {
+        "description": "The response for a describe request encapsulates a list of descriptions",
+        "example": {
+          "descriptions": [
+            {
+              "text": "A meticulously illustrated cat with striped patterns, sitting upright. The cat's eyes are a captivating shade of yellow, and it appears to be gazing intently at something. The background consists of abstract, swirling patterns in shades of black, white, and beige, creating an almost fluid or wavy appearance. The cat is positioned in the foreground, with the background elements fading into the distance, giving a sense of depth to the image."
+            },
+            {
+              "text": "A meticulously illustrated cat with striped patterns, sitting upright. The cat's eyes are a captivating shade of yellow, and it appears to be gazing intently at something. The background consists of abstract, swirling patterns in shades of black, white, and beige, creating an almost fluid or wavy appearance. The cat is positioned in the foreground, with the background elements fading into the distance, giving a sense of depth to the image."
+            }
+          ]
+        },
+        "properties": {
+          "descriptions": {
+            "description": "A collection of descriptions for given content",
+            "items": {
+              "example": {
+                "text": "A meticulously illustrated cat with striped patterns, sitting upright. The cat's eyes are a captivating shade of yellow, and it appears to be gazing intently at something. The background consists of abstract, swirling patterns in shades of black, white, and beige, creating an almost fluid or wavy appearance. The cat is positioned in the foreground, with the background elements fading into the distance, giving a sense of depth to the image."
+              },
+              "properties": {
+                "text": {
+                  "description": "The generated description for the provided image.",
+                  "example": "A meticulously illustrated cat with striped patterns, sitting upright. The cat's eyes are a captivating shade of yellow, and it appears to be gazing intently at something. The background consists of abstract, swirling patterns in shades of black, white, and beige, creating an almost fluid or wavy appearance. The cat is positioned in the foreground, with the background elements fading into the distance, giving a sense of depth to the image.",
+                  "title": "text",
+                  "type": "string"
+                }
+              },
+              "title": "Description",
+              "type": "object"
+            },
+            "title": "descriptions",
+            "type": "array"
+          }
+        },
+        "title": "DescribeResponse",
+        "type": "object"
+      },
+      "DescribeRequest": {
+        "description": "An image binary; only JPEG, WEBPs and PNGs are supported at this time",
+        "properties": {
+          "image_file": {
+            "format": "binary",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "GenerateImageRequest": {
+        "example": {
+          "image_request": {
+            "aspect_ratio": "ASPECT_10_16",
+            "magic_prompt_option": "AUTO",
+            "model": "V_1",
+            "prompt": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there is an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset."
+          }
+        },
+        "properties": {
+          "image_request": {
+            "example": {
+              "aspect_ratio": "ASPECT_10_16",
+              "magic_prompt_option": "AUTO",
+              "model": "V_1",
+              "prompt": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there is an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset."
+            },
+            "properties": {
+              "prompt": {
+                "description": "The prompt to use to generate the image.",
+                "example": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there is an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset.",
+                "type": "string"
+              },
+              "aspect_ratio": {
+                "description": "(Cannot be used in conjunction with resolution) The aspect ratio to use for image generation, which determines the image's resolution. Defaults to ASPECT_1_1.",
+                "enum": [
+                  "ASPECT_10_16",
+                  "ASPECT_16_10",
+                  "ASPECT_9_16",
+                  "ASPECT_16_9",
+                  "ASPECT_3_2",
+                  "ASPECT_2_3",
+                  "ASPECT_4_3",
+                  "ASPECT_3_4",
+                  "ASPECT_1_1",
+                  "ASPECT_1_3",
+                  "ASPECT_3_1"
+                ],
+                "example": "ASPECT_10_16",
+                "externalDocs": {
+                  "url": "https://docs.ideogram.ai/usage/advanced-prompting/aspect-ratios"
+                },
+                "title": "AspectRatio",
+                "type": "string"
+              },
+              "model": {
+                "default": "V_2",
+                "description": "The model used to generate. Defaults to V_2.",
+                "enum": [
+                  "V_1",
+                  "V_1_TURBO",
+                  "V_2",
+                  "V_2_TURBO"
+                ],
+                "example": "V_1_TURBO",
+                "title": "ModelEnum",
+                "type": "string"
+              },
+              "magic_prompt_option": {
+                "default": "AUTO",
+                "description": "Determine if MagicPrompt should be used in generating the request or not",
+                "enum": [
+                  "AUTO",
+                  "ON",
+                  "OFF"
+                ],
+                "example": "ON",
+                "externalDocs": {
+                  "url": "https://docs.ideogram.ai/using-ideogram/ideogram-features/magic-prompt"
+                },
+                "title": "MagicPromptOption",
+                "type": "string"
+              },
+              "seed": {
+                "example": 12345,
+                "maximum": 2147483647,
+                "minimum": 0,
+                "title": "Seed",
+                "type": "integer"
+              },
+              "style_type": {
+                "description": "The style type to generate with; this is only applicable for models V_2 and above and should not be specified for model versions V_1.",
+                "enum": [
+                  "GENERAL",
+                  "REALISTIC",
+                  "DESIGN",
+                  "RENDER_3D",
+                  "ANIME"
+                ],
+                "example": "REALISTIC",
+                "title": "StyleType",
+                "type": "string"
+              },
+              "negative_prompt": {
+                "description": "Description of what to exclude from an image. Descriptions in the prompt take precedence to descriptions in the negative prompt.",
+                "example": "brush strokes, painting",
+                "type": "string"
+              },
+              "resolution": {
+                "description": "(For model_version for 2.0 only, cannot be used in conjunction with aspect_ratio) The resolution to use for image generation, represented in width x height. If not specified, defaults to using aspect_ratio.",
+                "enum": [
+                  "RESOLUTION_512_1536",
+                  "RESOLUTION_576_1408",
+                  "RESOLUTION_576_1472",
+                  "RESOLUTION_576_1536",
+                  "RESOLUTION_640_1024",
+                  "RESOLUTION_640_1344",
+                  "RESOLUTION_640_1408",
+                  "RESOLUTION_640_1472",
+                  "RESOLUTION_640_1536",
+                  "RESOLUTION_704_1152",
+                  "RESOLUTION_704_1216",
+                  "RESOLUTION_704_1280",
+                  "RESOLUTION_704_1344",
+                  "RESOLUTION_704_1408",
+                  "RESOLUTION_704_1472",
+                  "RESOLUTION_720_1280",
+                  "RESOLUTION_736_1312",
+                  "RESOLUTION_768_1024",
+                  "RESOLUTION_768_1088",
+                  "RESOLUTION_768_1152",
+                  "RESOLUTION_768_1216",
+                  "RESOLUTION_768_1232",
+                  "RESOLUTION_768_1280",
+                  "RESOLUTION_768_1344",
+                  "RESOLUTION_832_960",
+                  "RESOLUTION_832_1024",
+                  "RESOLUTION_832_1088",
+                  "RESOLUTION_832_1152",
+                  "RESOLUTION_832_1216",
+                  "RESOLUTION_832_1248",
+                  "RESOLUTION_864_1152",
+                  "RESOLUTION_896_960",
+                  "RESOLUTION_896_1024",
+                  "RESOLUTION_896_1088",
+                  "RESOLUTION_896_1120",
+                  "RESOLUTION_896_1152",
+                  "RESOLUTION_960_832",
+                  "RESOLUTION_960_896",
+                  "RESOLUTION_960_1024",
+                  "RESOLUTION_960_1088",
+                  "RESOLUTION_1024_640",
+                  "RESOLUTION_1024_768",
+                  "RESOLUTION_1024_832",
+                  "RESOLUTION_1024_896",
+                  "RESOLUTION_1024_960",
+                  "RESOLUTION_1024_1024",
+                  "RESOLUTION_1088_768",
+                  "RESOLUTION_1088_832",
+                  "RESOLUTION_1088_896",
+                  "RESOLUTION_1088_960",
+                  "RESOLUTION_1120_896",
+                  "RESOLUTION_1152_704",
+                  "RESOLUTION_1152_768",
+                  "RESOLUTION_1152_832",
+                  "RESOLUTION_1152_864",
+                  "RESOLUTION_1152_896",
+                  "RESOLUTION_1216_704",
+                  "RESOLUTION_1216_768",
+                  "RESOLUTION_1216_832",
+                  "RESOLUTION_1232_768",
+                  "RESOLUTION_1248_832",
+                  "RESOLUTION_1280_704",
+                  "RESOLUTION_1280_720",
+                  "RESOLUTION_1280_768",
+                  "RESOLUTION_1280_800",
+                  "RESOLUTION_1312_736",
+                  "RESOLUTION_1344_640",
+                  "RESOLUTION_1344_704",
+                  "RESOLUTION_1344_768",
+                  "RESOLUTION_1408_576",
+                  "RESOLUTION_1408_640",
+                  "RESOLUTION_1408_704",
+                  "RESOLUTION_1472_576",
+                  "RESOLUTION_1472_640",
+                  "RESOLUTION_1472_704",
+                  "RESOLUTION_1536_512",
+                  "RESOLUTION_1536_576",
+                  "RESOLUTION_1536_640"
+                ],
+                "example": "RESOLUTION_1024_1024",
+                "title": "Resolution",
+                "type": "string"
+              }
+            },
+            "required": [
+              "prompt"
+            ],
+            "title": "ImageRequest",
+            "type": "object"
+          }
+        },
+        "required": [
+          "image_request"
+        ],
+        "title": "GenerateImageRequest",
+        "type": "object"
+      },
+      "RemixImageRequest": {
+        "description": "A request to generate an image from a source image and a provided caption, provided images are cropped to match the chosen output aspect ratio",
+        "properties": {
+          "image_request": {
+            "allOf": [
+              {
+                "example": {
+                  "aspect_ratio": "ASPECT_10_16",
+                  "magic_prompt_option": "AUTO",
+                  "model": "V_1",
+                  "prompt": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there is an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset."
+                },
+                "properties": {
+                  "prompt": {
+                    "description": "The prompt to use to generate the image.",
+                    "example": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there is an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset.",
+                    "type": "string"
+                  },
+                  "aspect_ratio": {
+                    "description": "(Cannot be used in conjunction with resolution) The aspect ratio to use for image generation, which determines the image's resolution. Defaults to ASPECT_1_1.",
+                    "enum": [
+                      "ASPECT_10_16",
+                      "ASPECT_16_10",
+                      "ASPECT_9_16",
+                      "ASPECT_16_9",
+                      "ASPECT_3_2",
+                      "ASPECT_2_3",
+                      "ASPECT_4_3",
+                      "ASPECT_3_4",
+                      "ASPECT_1_1",
+                      "ASPECT_1_3",
+                      "ASPECT_3_1"
+                    ],
+                    "example": "ASPECT_10_16",
+                    "externalDocs": {
+                      "url": "https://docs.ideogram.ai/usage/advanced-prompting/aspect-ratios"
+                    },
+                    "title": "AspectRatio",
+                    "type": "string"
+                  },
+                  "model": {
+                    "default": "V_2",
+                    "description": "The model used to generate. Defaults to V_2.",
+                    "enum": [
+                      "V_1",
+                      "V_1_TURBO",
+                      "V_2",
+                      "V_2_TURBO"
+                    ],
+                    "example": "V_1_TURBO",
+                    "title": "ModelEnum",
+                    "type": "string"
+                  },
+                  "magic_prompt_option": {
+                    "default": "AUTO",
+                    "description": "Determine if MagicPrompt should be used in generating the request or not",
+                    "enum": [
+                      "AUTO",
+                      "ON",
+                      "OFF"
+                    ],
+                    "example": "ON",
+                    "externalDocs": {
+                      "url": "https://docs.ideogram.ai/using-ideogram/ideogram-features/magic-prompt"
+                    },
+                    "title": "MagicPromptOption",
+                    "type": "string"
+                  },
+                  "seed": {
+                    "example": 12345,
+                    "maximum": 2147483647,
+                    "minimum": 0,
+                    "title": "Seed",
+                    "type": "integer"
+                  },
+                  "style_type": {
+                    "description": "The style type to generate with; this is only applicable for models V_2 and above and should not be specified for model versions V_1.",
+                    "enum": [
+                      "GENERAL",
+                      "REALISTIC",
+                      "DESIGN",
+                      "RENDER_3D",
+                      "ANIME"
+                    ],
+                    "example": "REALISTIC",
+                    "title": "StyleType",
+                    "type": "string"
+                  },
+                  "negative_prompt": {
+                    "description": "Description of what to exclude from an image. Descriptions in the prompt take precedence to descriptions in the negative prompt.",
+                    "example": "brush strokes, painting",
+                    "type": "string"
+                  },
+                  "resolution": {
+                    "description": "(For model_version for 2.0 only, cannot be used in conjunction with aspect_ratio) The resolution to use for image generation, represented in width x height. If not specified, defaults to using aspect_ratio.",
+                    "enum": [
+                      "RESOLUTION_512_1536",
+                      "RESOLUTION_576_1408",
+                      "RESOLUTION_576_1472",
+                      "RESOLUTION_576_1536",
+                      "RESOLUTION_640_1024",
+                      "RESOLUTION_640_1344",
+                      "RESOLUTION_640_1408",
+                      "RESOLUTION_640_1472",
+                      "RESOLUTION_640_1536",
+                      "RESOLUTION_704_1152",
+                      "RESOLUTION_704_1216",
+                      "RESOLUTION_704_1280",
+                      "RESOLUTION_704_1344",
+                      "RESOLUTION_704_1408",
+                      "RESOLUTION_704_1472",
+                      "RESOLUTION_720_1280",
+                      "RESOLUTION_736_1312",
+                      "RESOLUTION_768_1024",
+                      "RESOLUTION_768_1088",
+                      "RESOLUTION_768_1152",
+                      "RESOLUTION_768_1216",
+                      "RESOLUTION_768_1232",
+                      "RESOLUTION_768_1280",
+                      "RESOLUTION_768_1344",
+                      "RESOLUTION_832_960",
+                      "RESOLUTION_832_1024",
+                      "RESOLUTION_832_1088",
+                      "RESOLUTION_832_1152",
+                      "RESOLUTION_832_1216",
+                      "RESOLUTION_832_1248",
+                      "RESOLUTION_864_1152",
+                      "RESOLUTION_896_960",
+                      "RESOLUTION_896_1024",
+                      "RESOLUTION_896_1088",
+                      "RESOLUTION_896_1120",
+                      "RESOLUTION_896_1152",
+                      "RESOLUTION_960_832",
+                      "RESOLUTION_960_896",
+                      "RESOLUTION_960_1024",
+                      "RESOLUTION_960_1088",
+                      "RESOLUTION_1024_640",
+                      "RESOLUTION_1024_768",
+                      "RESOLUTION_1024_832",
+                      "RESOLUTION_1024_896",
+                      "RESOLUTION_1024_960",
+                      "RESOLUTION_1024_1024",
+                      "RESOLUTION_1088_768",
+                      "RESOLUTION_1088_832",
+                      "RESOLUTION_1088_896",
+                      "RESOLUTION_1088_960",
+                      "RESOLUTION_1120_896",
+                      "RESOLUTION_1152_704",
+                      "RESOLUTION_1152_768",
+                      "RESOLUTION_1152_832",
+                      "RESOLUTION_1152_864",
+                      "RESOLUTION_1152_896",
+                      "RESOLUTION_1216_704",
+                      "RESOLUTION_1216_768",
+                      "RESOLUTION_1216_832",
+                      "RESOLUTION_1232_768",
+                      "RESOLUTION_1248_832",
+                      "RESOLUTION_1280_704",
+                      "RESOLUTION_1280_720",
+                      "RESOLUTION_1280_768",
+                      "RESOLUTION_1280_800",
+                      "RESOLUTION_1312_736",
+                      "RESOLUTION_1344_640",
+                      "RESOLUTION_1344_704",
+                      "RESOLUTION_1344_768",
+                      "RESOLUTION_1408_576",
+                      "RESOLUTION_1408_640",
+                      "RESOLUTION_1408_704",
+                      "RESOLUTION_1472_576",
+                      "RESOLUTION_1472_640",
+                      "RESOLUTION_1472_704",
+                      "RESOLUTION_1536_512",
+                      "RESOLUTION_1536_576",
+                      "RESOLUTION_1536_640"
+                    ],
+                    "example": "RESOLUTION_1024_1024",
+                    "title": "Resolution",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "prompt"
+                ],
+                "title": "ImageRequest",
+                "type": "object"
+              }
+            ],
+            "description": "A request to generate a new image using a provided image and a prompt.",
+            "example": {
+              "aspect_ratio": "ASPECT_10_16",
+              "magic_prompt_option": "ON",
+              "model": "V_1",
+              "prompt": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there is an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset.",
+              "image_weight": 50
+            },
+            "properties": {
+              "image_weight": {
+                "default": 50,
+                "example": 50,
+                "maximum": 100,
+                "minimum": 1,
+                "type": "integer"
+              }
+            },
+            "title": "InitialImageRequest",
+            "type": "object"
+          },
+          "image_file": {
+            "description": "An image binary; only JPEG, WEBPs and PNGs are supported at this time",
+            "format": "binary",
+            "type": "string"
+          }
+        },
+        "required": [
+          "image_file",
+          "image_request"
+        ],
+        "type": "object"
+      },
+      "UpscaleImageRequest": {
+        "properties": {
+          "image_request": {
+            "description": "A request to upscale a provided image with the help of an optional prompt.",
+            "properties": {
+              "prompt": {
+                "description": "An optional prompt to guide the upscale",
+                "example": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there is an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset.",
+                "title": "prompt",
+                "type": "string"
+              },
+              "resemblance": {
+                "default": 50,
+                "example": 50,
+                "maximum": 100,
+                "minimum": 1,
+                "title": "resemblance",
+                "type": "integer"
+              },
+              "detail": {
+                "default": 50,
+                "example": 50,
+                "maximum": 100,
+                "minimum": 1,
+                "title": "detail",
+                "type": "integer"
+              },
+              "magic_prompt_option": {
+                "default": "AUTO",
+                "description": "Determine if MagicPrompt should be used in generating the request or not",
+                "enum": [
+                  "AUTO",
+                  "ON",
+                  "OFF"
+                ],
+                "example": "ON",
+                "externalDocs": {
+                  "url": "https://docs.ideogram.ai/using-ideogram/ideogram-features/magic-prompt"
+                },
+                "title": "MagicPromptOption",
+                "type": "string"
+              },
+              "seed": {
+                "example": 12345,
+                "maximum": 2147483647,
+                "minimum": 0,
+                "title": "Seed",
+                "type": "integer"
+              }
+            },
+            "title": "UpscaleInitialImageRequest",
+            "type": "object"
+          },
+          "image_file": {
+            "description": "An image binary; only JPEG, WEBPs and PNGs are supported at this time",
+            "format": "binary",
+            "type": "string"
+          }
+        },
+        "required": [
+          "image_file",
+          "image_request"
+        ],
+        "type": "object"
+      },
+      "ImageRequest": {
+        "example": {
+          "aspect_ratio": "ASPECT_10_16",
+          "magic_prompt_option": "AUTO",
+          "model": "V_1",
+          "prompt": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there is an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset."
+        },
+        "properties": {
+          "prompt": {
+            "description": "The prompt to use to generate the image.",
+            "example": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there is an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset.",
+            "type": "string"
+          },
+          "aspect_ratio": {
+            "description": "(Cannot be used in conjunction with resolution) The aspect ratio to use for image generation, which determines the image's resolution. Defaults to ASPECT_1_1.",
+            "enum": [
+              "ASPECT_10_16",
+              "ASPECT_16_10",
+              "ASPECT_9_16",
+              "ASPECT_16_9",
+              "ASPECT_3_2",
+              "ASPECT_2_3",
+              "ASPECT_4_3",
+              "ASPECT_3_4",
+              "ASPECT_1_1",
+              "ASPECT_1_3",
+              "ASPECT_3_1"
+            ],
+            "example": "ASPECT_10_16",
+            "externalDocs": {
+              "url": "https://docs.ideogram.ai/usage/advanced-prompting/aspect-ratios"
+            },
+            "title": "AspectRatio",
+            "type": "string"
+          },
+          "model": {
+            "default": "V_2",
+            "description": "The model used to generate. Defaults to V_2.",
+            "enum": [
+              "V_1",
+              "V_1_TURBO",
+              "V_2",
+              "V_2_TURBO"
+            ],
+            "example": "V_1_TURBO",
+            "title": "ModelEnum",
+            "type": "string"
+          },
+          "magic_prompt_option": {
+            "default": "AUTO",
+            "description": "Determine if MagicPrompt should be used in generating the request or not",
+            "enum": [
+              "AUTO",
+              "ON",
+              "OFF"
+            ],
+            "example": "ON",
+            "externalDocs": {
+              "url": "https://docs.ideogram.ai/using-ideogram/ideogram-features/magic-prompt"
+            },
+            "title": "MagicPromptOption",
+            "type": "string"
+          },
+          "seed": {
+            "example": 12345,
+            "maximum": 2147483647,
+            "minimum": 0,
+            "title": "Seed",
+            "type": "integer"
+          },
+          "style_type": {
+            "description": "The style type to generate with; this is only applicable for models V_2 and above and should not be specified for model versions V_1.",
+            "enum": [
+              "GENERAL",
+              "REALISTIC",
+              "DESIGN",
+              "RENDER_3D",
+              "ANIME"
+            ],
+            "example": "REALISTIC",
+            "title": "StyleType",
+            "type": "string"
+          },
+          "negative_prompt": {
+            "description": "Description of what to exclude from an image. Descriptions in the prompt take precedence to descriptions in the negative prompt.",
+            "example": "brush strokes, painting",
+            "type": "string"
+          },
+          "resolution": {
+            "description": "(For model_version for 2.0 only, cannot be used in conjunction with aspect_ratio) The resolution to use for image generation, represented in width x height. If not specified, defaults to using aspect_ratio.",
+            "enum": [
+              "RESOLUTION_512_1536",
+              "RESOLUTION_576_1408",
+              "RESOLUTION_576_1472",
+              "RESOLUTION_576_1536",
+              "RESOLUTION_640_1024",
+              "RESOLUTION_640_1344",
+              "RESOLUTION_640_1408",
+              "RESOLUTION_640_1472",
+              "RESOLUTION_640_1536",
+              "RESOLUTION_704_1152",
+              "RESOLUTION_704_1216",
+              "RESOLUTION_704_1280",
+              "RESOLUTION_704_1344",
+              "RESOLUTION_704_1408",
+              "RESOLUTION_704_1472",
+              "RESOLUTION_720_1280",
+              "RESOLUTION_736_1312",
+              "RESOLUTION_768_1024",
+              "RESOLUTION_768_1088",
+              "RESOLUTION_768_1152",
+              "RESOLUTION_768_1216",
+              "RESOLUTION_768_1232",
+              "RESOLUTION_768_1280",
+              "RESOLUTION_768_1344",
+              "RESOLUTION_832_960",
+              "RESOLUTION_832_1024",
+              "RESOLUTION_832_1088",
+              "RESOLUTION_832_1152",
+              "RESOLUTION_832_1216",
+              "RESOLUTION_832_1248",
+              "RESOLUTION_864_1152",
+              "RESOLUTION_896_960",
+              "RESOLUTION_896_1024",
+              "RESOLUTION_896_1088",
+              "RESOLUTION_896_1120",
+              "RESOLUTION_896_1152",
+              "RESOLUTION_960_832",
+              "RESOLUTION_960_896",
+              "RESOLUTION_960_1024",
+              "RESOLUTION_960_1088",
+              "RESOLUTION_1024_640",
+              "RESOLUTION_1024_768",
+              "RESOLUTION_1024_832",
+              "RESOLUTION_1024_896",
+              "RESOLUTION_1024_960",
+              "RESOLUTION_1024_1024",
+              "RESOLUTION_1088_768",
+              "RESOLUTION_1088_832",
+              "RESOLUTION_1088_896",
+              "RESOLUTION_1088_960",
+              "RESOLUTION_1120_896",
+              "RESOLUTION_1152_704",
+              "RESOLUTION_1152_768",
+              "RESOLUTION_1152_832",
+              "RESOLUTION_1152_864",
+              "RESOLUTION_1152_896",
+              "RESOLUTION_1216_704",
+              "RESOLUTION_1216_768",
+              "RESOLUTION_1216_832",
+              "RESOLUTION_1232_768",
+              "RESOLUTION_1248_832",
+              "RESOLUTION_1280_704",
+              "RESOLUTION_1280_720",
+              "RESOLUTION_1280_768",
+              "RESOLUTION_1280_800",
+              "RESOLUTION_1312_736",
+              "RESOLUTION_1344_640",
+              "RESOLUTION_1344_704",
+              "RESOLUTION_1344_768",
+              "RESOLUTION_1408_576",
+              "RESOLUTION_1408_640",
+              "RESOLUTION_1408_704",
+              "RESOLUTION_1472_576",
+              "RESOLUTION_1472_640",
+              "RESOLUTION_1472_704",
+              "RESOLUTION_1536_512",
+              "RESOLUTION_1536_576",
+              "RESOLUTION_1536_640"
+            ],
+            "example": "RESOLUTION_1024_1024",
+            "title": "Resolution",
+            "type": "string"
+          }
+        },
+        "required": [
+          "prompt"
+        ],
+        "title": "ImageRequest",
+        "type": "object"
+      },
+      "InitialImageRequest": {
+        "allOf": [
+          {
+            "example": {
+              "aspect_ratio": "ASPECT_10_16",
+              "magic_prompt_option": "AUTO",
+              "model": "V_1",
+              "prompt": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there is an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset."
+            },
+            "properties": {
+              "prompt": {
+                "description": "The prompt to use to generate the image.",
+                "example": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there is an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset.",
+                "type": "string"
+              },
+              "aspect_ratio": {
+                "description": "(Cannot be used in conjunction with resolution) The aspect ratio to use for image generation, which determines the image's resolution. Defaults to ASPECT_1_1.",
+                "enum": [
+                  "ASPECT_10_16",
+                  "ASPECT_16_10",
+                  "ASPECT_9_16",
+                  "ASPECT_16_9",
+                  "ASPECT_3_2",
+                  "ASPECT_2_3",
+                  "ASPECT_4_3",
+                  "ASPECT_3_4",
+                  "ASPECT_1_1",
+                  "ASPECT_1_3",
+                  "ASPECT_3_1"
+                ],
+                "example": "ASPECT_10_16",
+                "externalDocs": {
+                  "url": "https://docs.ideogram.ai/usage/advanced-prompting/aspect-ratios"
+                },
+                "title": "AspectRatio",
+                "type": "string"
+              },
+              "model": {
+                "default": "V_2",
+                "description": "The model used to generate. Defaults to V_2.",
+                "enum": [
+                  "V_1",
+                  "V_1_TURBO",
+                  "V_2",
+                  "V_2_TURBO"
+                ],
+                "example": "V_1_TURBO",
+                "title": "ModelEnum",
+                "type": "string"
+              },
+              "magic_prompt_option": {
+                "default": "AUTO",
+                "description": "Determine if MagicPrompt should be used in generating the request or not",
+                "enum": [
+                  "AUTO",
+                  "ON",
+                  "OFF"
+                ],
+                "example": "ON",
+                "externalDocs": {
+                  "url": "https://docs.ideogram.ai/using-ideogram/ideogram-features/magic-prompt"
+                },
+                "title": "MagicPromptOption",
+                "type": "string"
+              },
+              "seed": {
+                "example": 12345,
+                "maximum": 2147483647,
+                "minimum": 0,
+                "title": "Seed",
+                "type": "integer"
+              },
+              "style_type": {
+                "description": "The style type to generate with; this is only applicable for models V_2 and above and should not be specified for model versions V_1.",
+                "enum": [
+                  "GENERAL",
+                  "REALISTIC",
+                  "DESIGN",
+                  "RENDER_3D",
+                  "ANIME"
+                ],
+                "example": "REALISTIC",
+                "title": "StyleType",
+                "type": "string"
+              },
+              "negative_prompt": {
+                "description": "Description of what to exclude from an image. Descriptions in the prompt take precedence to descriptions in the negative prompt.",
+                "example": "brush strokes, painting",
+                "type": "string"
+              },
+              "resolution": {
+                "description": "(For model_version for 2.0 only, cannot be used in conjunction with aspect_ratio) The resolution to use for image generation, represented in width x height. If not specified, defaults to using aspect_ratio.",
+                "enum": [
+                  "RESOLUTION_512_1536",
+                  "RESOLUTION_576_1408",
+                  "RESOLUTION_576_1472",
+                  "RESOLUTION_576_1536",
+                  "RESOLUTION_640_1024",
+                  "RESOLUTION_640_1344",
+                  "RESOLUTION_640_1408",
+                  "RESOLUTION_640_1472",
+                  "RESOLUTION_640_1536",
+                  "RESOLUTION_704_1152",
+                  "RESOLUTION_704_1216",
+                  "RESOLUTION_704_1280",
+                  "RESOLUTION_704_1344",
+                  "RESOLUTION_704_1408",
+                  "RESOLUTION_704_1472",
+                  "RESOLUTION_720_1280",
+                  "RESOLUTION_736_1312",
+                  "RESOLUTION_768_1024",
+                  "RESOLUTION_768_1088",
+                  "RESOLUTION_768_1152",
+                  "RESOLUTION_768_1216",
+                  "RESOLUTION_768_1232",
+                  "RESOLUTION_768_1280",
+                  "RESOLUTION_768_1344",
+                  "RESOLUTION_832_960",
+                  "RESOLUTION_832_1024",
+                  "RESOLUTION_832_1088",
+                  "RESOLUTION_832_1152",
+                  "RESOLUTION_832_1216",
+                  "RESOLUTION_832_1248",
+                  "RESOLUTION_864_1152",
+                  "RESOLUTION_896_960",
+                  "RESOLUTION_896_1024",
+                  "RESOLUTION_896_1088",
+                  "RESOLUTION_896_1120",
+                  "RESOLUTION_896_1152",
+                  "RESOLUTION_960_832",
+                  "RESOLUTION_960_896",
+                  "RESOLUTION_960_1024",
+                  "RESOLUTION_960_1088",
+                  "RESOLUTION_1024_640",
+                  "RESOLUTION_1024_768",
+                  "RESOLUTION_1024_832",
+                  "RESOLUTION_1024_896",
+                  "RESOLUTION_1024_960",
+                  "RESOLUTION_1024_1024",
+                  "RESOLUTION_1088_768",
+                  "RESOLUTION_1088_832",
+                  "RESOLUTION_1088_896",
+                  "RESOLUTION_1088_960",
+                  "RESOLUTION_1120_896",
+                  "RESOLUTION_1152_704",
+                  "RESOLUTION_1152_768",
+                  "RESOLUTION_1152_832",
+                  "RESOLUTION_1152_864",
+                  "RESOLUTION_1152_896",
+                  "RESOLUTION_1216_704",
+                  "RESOLUTION_1216_768",
+                  "RESOLUTION_1216_832",
+                  "RESOLUTION_1232_768",
+                  "RESOLUTION_1248_832",
+                  "RESOLUTION_1280_704",
+                  "RESOLUTION_1280_720",
+                  "RESOLUTION_1280_768",
+                  "RESOLUTION_1280_800",
+                  "RESOLUTION_1312_736",
+                  "RESOLUTION_1344_640",
+                  "RESOLUTION_1344_704",
+                  "RESOLUTION_1344_768",
+                  "RESOLUTION_1408_576",
+                  "RESOLUTION_1408_640",
+                  "RESOLUTION_1408_704",
+                  "RESOLUTION_1472_576",
+                  "RESOLUTION_1472_640",
+                  "RESOLUTION_1472_704",
+                  "RESOLUTION_1536_512",
+                  "RESOLUTION_1536_576",
+                  "RESOLUTION_1536_640"
+                ],
+                "example": "RESOLUTION_1024_1024",
+                "title": "Resolution",
+                "type": "string"
+              }
+            },
+            "required": [
+              "prompt"
+            ],
+            "title": "ImageRequest",
+            "type": "object"
+          }
+        ],
+        "description": "A request to generate a new image using a provided image and a prompt.",
+        "example": {
+          "aspect_ratio": "ASPECT_10_16",
+          "magic_prompt_option": "ON",
+          "model": "V_1",
+          "prompt": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there is an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset.",
+          "image_weight": 50
+        },
+        "properties": {
+          "image_weight": {
+            "default": 50,
+            "example": 50,
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "title": "InitialImageRequest",
+        "type": "object"
+      },
+      "UpscaleInitialImageRequest": {
+        "description": "A request to upscale a provided image with the help of an optional prompt.",
+        "properties": {
+          "prompt": {
+            "description": "An optional prompt to guide the upscale",
+            "example": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there is an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset.",
+            "title": "prompt",
+            "type": "string"
+          },
+          "resemblance": {
+            "default": 50,
+            "example": 50,
+            "maximum": 100,
+            "minimum": 1,
+            "title": "resemblance",
+            "type": "integer"
+          },
+          "detail": {
+            "default": 50,
+            "example": 50,
+            "maximum": 100,
+            "minimum": 1,
+            "title": "detail",
+            "type": "integer"
+          },
+          "magic_prompt_option": {
+            "default": "AUTO",
+            "description": "Determine if MagicPrompt should be used in generating the request or not",
+            "enum": [
+              "AUTO",
+              "ON",
+              "OFF"
+            ],
+            "example": "ON",
+            "externalDocs": {
+              "url": "https://docs.ideogram.ai/using-ideogram/ideogram-features/magic-prompt"
+            },
+            "title": "MagicPromptOption",
+            "type": "string"
+          },
+          "seed": {
+            "example": 12345,
+            "maximum": 2147483647,
+            "minimum": 0,
+            "title": "Seed",
+            "type": "integer"
+          }
+        },
+        "title": "UpscaleInitialImageRequest",
+        "type": "object"
+      },
+      "GenerateImageResponse": {
+        "example": {
+          "data": [
+            {
+              "seed": 12345,
+              "prompt": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there's an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset.",
+              "resolution": "1024x1024",
+              "url": "https://ideogram.ai/api/images/direct/8YEpFzHuS-S6xXEGmCsf7g",
+              "is_image_safe": true
+            },
+            {
+              "seed": 12345,
+              "prompt": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there's an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset.",
+              "resolution": "1024x1024",
+              "url": "https://ideogram.ai/api/images/direct/8YEpFzHuS-S6xXEGmCsf7g",
+              "is_image_safe": true
+            }
+          ],
+          "created": "2000-01-23T04:56:07.000Z"
+        },
+        "properties": {
+          "created": {
+            "description": "The time the request was created.",
+            "format": "date-time",
+            "title": "created",
+            "type": "string"
+          },
+          "data": {
+            "description": "A list of ImageObjects that contain the generated image(s).",
+            "items": {
+              "example": {
+                "seed": 12345,
+                "prompt": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there's an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset.",
+                "resolution": "1024x1024",
+                "url": "https://ideogram.ai/api/images/direct/8YEpFzHuS-S6xXEGmCsf7g",
+                "is_image_safe": true
+              },
+              "properties": {
+                "url": {
+                  "description": "The direct link to the image generated.",
+                  "example": "https://ideogram.ai/api/images/direct/8YEpFzHuS-S6xXEGmCsf7g",
+                  "format": "uri",
+                  "nullable": true,
+                  "title": "url",
+                  "type": "string"
+                },
+                "prompt": {
+                  "description": "The prompt used for the generation. This may be different from the original prompt.",
+                  "example": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there's an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset.",
+                  "title": "prompt",
+                  "type": "string"
+                },
+                "resolution": {
+                  "description": "The resolution of the final image.",
+                  "example": "1024x1024",
+                  "title": "resolution",
+                  "type": "string"
+                },
+                "is_image_safe": {
+                  "description": "Whether this request passes safety checks. If false, the url field will be empty.",
+                  "title": "is_image_safe",
+                  "type": "boolean"
+                },
+                "seed": {
+                  "example": 12345,
+                  "maximum": 2147483647,
+                  "minimum": 0,
+                  "title": "Seed",
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "is_image_safe",
+                "prompt",
+                "resolution",
+                "seed"
+              ],
+              "title": "ImageObject",
+              "type": "object"
+            },
+            "title": "data",
+            "type": "array"
+          }
+        },
+        "required": [
+          "created",
+          "data"
+        ],
+        "title": "GenerateImageResponse",
+        "type": "object"
+      },
+      "ImageObject": {
+        "example": {
+          "seed": 12345,
+          "prompt": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there's an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset.",
+          "resolution": "1024x1024",
+          "url": "https://ideogram.ai/api/images/direct/8YEpFzHuS-S6xXEGmCsf7g",
+          "is_image_safe": true
+        },
+        "properties": {
+          "url": {
+            "description": "The direct link to the image generated.",
+            "example": "https://ideogram.ai/api/images/direct/8YEpFzHuS-S6xXEGmCsf7g",
+            "format": "uri",
+            "nullable": true,
+            "title": "url",
+            "type": "string"
+          },
+          "prompt": {
+            "description": "The prompt used for the generation. This may be different from the original prompt.",
+            "example": "A serene tropical beach scene. Dominating the foreground are tall palm trees with lush green leaves, standing tall against a backdrop of a sandy beach. The beach leads to the azure waters of the sea, which gently kisses the shoreline. In the distance, there's an island or landmass with a silhouette of what appears to be a lighthouse or tower. The sky above is painted with fluffy white clouds, some of which are tinged with hues of pink and orange, suggesting either a sunrise or sunset.",
+            "title": "prompt",
+            "type": "string"
+          },
+          "resolution": {
+            "description": "The resolution of the final image.",
+            "example": "1024x1024",
+            "title": "resolution",
+            "type": "string"
+          },
+          "is_image_safe": {
+            "description": "Whether this request passes safety checks. If false, the url field will be empty.",
+            "title": "is_image_safe",
+            "type": "boolean"
+          },
+          "seed": {
+            "example": 12345,
+            "maximum": 2147483647,
+            "minimum": 0,
+            "title": "Seed",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "is_image_safe",
+          "prompt",
+          "resolution",
+          "seed"
+        ],
+        "title": "ImageObject",
+        "type": "object"
+      },
+      "ModelEnum": {
+        "default": "V_2",
+        "description": "The model used to generate. Defaults to V_2.",
+        "enum": [
+          "V_1",
+          "V_1_TURBO",
+          "V_2",
+          "V_2_TURBO"
+        ],
+        "example": "V_1_TURBO",
+        "title": "ModelEnum",
+        "type": "string"
+      },
+      "GenerateImageSafetyError": {
+        "example": {
+          "error": "Prompt provided failed safety check due to the inclusion of prohibited content."
+        },
+        "properties": {
+          "error": {
+            "example": "Prompt provided failed safety check due to the inclusion of prohibited content.",
+            "title": "error",
+            "type": "string"
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "title": "GenerateImageSafetyError",
+        "type": "object"
+      },
+      "ImageSafetyError": {
+        "example": {
+          "error": "Image provided failed safety check due to the inclusion of prohibited content."
+        },
+        "properties": {
+          "error": {
+            "example": "Image provided failed safety check due to the inclusion of prohibited content.",
+            "title": "error",
+            "type": "string"
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "title": "ImageSafetyError",
+        "type": "object"
+      },
+      "ManageApiSubscriptionResponse": {
+        "example": {
+          "recharge_settings": {
+            "minimum_balance_threshold": {
+              "amount": 1050,
+              "currency_code": "USD"
+            },
+            "top_up_balance": {
+              "amount": 1050,
+              "currency_code": "USD"
+            }
+          },
+          "has_stripe_setup": true,
+          "metronome_dashboard_dark_mode_url": "metronome_dashboard_dark_mode_url",
+          "stripe_billing_url": "stripe_billing_url",
+          "has_accepted_terms": true,
+          "metronome_dashboard_url": "metronome_dashboard_url"
+        },
+        "properties": {
+          "has_accepted_terms": {
+            "description": "Whether or not the latest required terms have been accepted.",
+            "title": "has_accepted_terms",
+            "type": "boolean"
+          },
+          "has_stripe_setup": {
+            "description": "Whether or not Stripe is setup for API usage.",
+            "title": "has_stripe_setup",
+            "type": "boolean"
+          },
+          "metronome_dashboard_url": {
+            "description": "The URL to display the customer usage dashboard.",
+            "title": "metronome_dashboard_url",
+            "type": "string"
+          },
+          "metronome_dashboard_dark_mode_url": {
+            "description": "The URL to display the customer usage dashboard, in dark mode.",
+            "title": "metronome_dashboard_dark_mode_url",
+            "type": "string"
+          },
+          "recharge_settings": {
+            "description": "The current recharge settings for the API subscription.",
+            "example": {
+              "minimum_balance_threshold": {
+                "amount": 1050,
+                "currency_code": "USD"
+              },
+              "top_up_balance": {
+                "amount": 1050,
+                "currency_code": "USD"
+              }
+            },
+            "properties": {
+              "top_up_balance": {
+                "description": "Represents a price.",
+                "example": {
+                  "amount": 1050,
+                  "currency_code": "USD"
+                },
+                "properties": {
+                  "currency_code": {
+                    "description": "The ISO 4217 currency code for the price object.",
+                    "example": "USD",
+                    "title": "currency_code",
+                    "type": "string"
+                  },
+                  "amount": {
+                    "description": "The amount of the currency in the common denomination. For example, in USD this is cents.",
+                    "example": 1050,
+                    "title": "amount",
+                    "type": "number"
+                  }
+                },
+                "title": "Price",
+                "type": "object"
+              },
+              "minimum_balance_threshold": {
+                "description": "Represents a price.",
+                "example": {
+                  "amount": 1050,
+                  "currency_code": "USD"
+                },
+                "properties": {
+                  "currency_code": {
+                    "description": "The ISO 4217 currency code for the price object.",
+                    "example": "USD",
+                    "title": "currency_code",
+                    "type": "string"
+                  },
+                  "amount": {
+                    "description": "The amount of the currency in the common denomination. For example, in USD this is cents.",
+                    "example": 1050,
+                    "title": "amount",
+                    "type": "number"
+                  }
+                },
+                "title": "Price",
+                "type": "object"
+              }
+            },
+            "required": [
+              "minimum_balance_threshold",
+              "top_up_balance"
+            ],
+            "title": "RechargeSettings",
+            "type": "object"
+          },
+          "stripe_billing_url": {
+            "description": "The URL for the user to manage the existing Stripe subscription plan.",
+            "title": "stripe_billing_url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "has_accepted_terms",
+          "has_stripe_setup"
+        ],
+        "title": "ManageApiSubscriptionResponse",
+        "type": "object"
+      },
+      "RechargeSettings": {
+        "description": "The current recharge settings for the API subscription.",
+        "example": {
+          "minimum_balance_threshold": {
+            "amount": 1050,
+            "currency_code": "USD"
+          },
+          "top_up_balance": {
+            "amount": 1050,
+            "currency_code": "USD"
+          }
+        },
+        "properties": {
+          "top_up_balance": {
+            "description": "Represents a price.",
+            "example": {
+              "amount": 1050,
+              "currency_code": "USD"
+            },
+            "properties": {
+              "currency_code": {
+                "description": "The ISO 4217 currency code for the price object.",
+                "example": "USD",
+                "title": "currency_code",
+                "type": "string"
+              },
+              "amount": {
+                "description": "The amount of the currency in the common denomination. For example, in USD this is cents.",
+                "example": 1050,
+                "title": "amount",
+                "type": "number"
+              }
+            },
+            "title": "Price",
+            "type": "object"
+          },
+          "minimum_balance_threshold": {
+            "description": "Represents a price.",
+            "example": {
+              "amount": 1050,
+              "currency_code": "USD"
+            },
+            "properties": {
+              "currency_code": {
+                "description": "The ISO 4217 currency code for the price object.",
+                "example": "USD",
+                "title": "currency_code",
+                "type": "string"
+              },
+              "amount": {
+                "description": "The amount of the currency in the common denomination. For example, in USD this is cents.",
+                "example": 1050,
+                "title": "amount",
+                "type": "number"
+              }
+            },
+            "title": "Price",
+            "type": "object"
+          }
+        },
+        "required": [
+          "minimum_balance_threshold",
+          "top_up_balance"
+        ],
+        "title": "RechargeSettings",
+        "type": "object"
+      },
+      "PostApiSubscriptionResponse": {
+        "description": "The updated API subscription.",
+        "example": {
+          "recharge_settings": {
+            "minimum_balance_threshold": {
+              "amount": 1050,
+              "currency_code": "USD"
+            },
+            "top_up_balance": {
+              "amount": 1050,
+              "currency_code": "USD"
+            }
+          }
+        },
+        "properties": {
+          "recharge_settings": {
+            "description": "The current recharge settings for the API subscription.",
+            "example": {
+              "minimum_balance_threshold": {
+                "amount": 1050,
+                "currency_code": "USD"
+              },
+              "top_up_balance": {
+                "amount": 1050,
+                "currency_code": "USD"
+              }
+            },
+            "properties": {
+              "top_up_balance": {
+                "description": "Represents a price.",
+                "example": {
+                  "amount": 1050,
+                  "currency_code": "USD"
+                },
+                "properties": {
+                  "currency_code": {
+                    "description": "The ISO 4217 currency code for the price object.",
+                    "example": "USD",
+                    "title": "currency_code",
+                    "type": "string"
+                  },
+                  "amount": {
+                    "description": "The amount of the currency in the common denomination. For example, in USD this is cents.",
+                    "example": 1050,
+                    "title": "amount",
+                    "type": "number"
+                  }
+                },
+                "title": "Price",
+                "type": "object"
+              },
+              "minimum_balance_threshold": {
+                "description": "Represents a price.",
+                "example": {
+                  "amount": 1050,
+                  "currency_code": "USD"
+                },
+                "properties": {
+                  "currency_code": {
+                    "description": "The ISO 4217 currency code for the price object.",
+                    "example": "USD",
+                    "title": "currency_code",
+                    "type": "string"
+                  },
+                  "amount": {
+                    "description": "The amount of the currency in the common denomination. For example, in USD this is cents.",
+                    "example": 1050,
+                    "title": "amount",
+                    "type": "number"
+                  }
+                },
+                "title": "Price",
+                "type": "object"
+              }
+            },
+            "required": [
+              "minimum_balance_threshold",
+              "top_up_balance"
+            ],
+            "title": "RechargeSettings",
+            "type": "object"
+          }
+        },
+        "title": "PostApiSubscriptionResponse",
+        "type": "object"
+      },
+      "PostApiSubscriptionError": {
+        "description": "Represents an error when attempting to update the API subscription.",
+        "example": {
+          "messages": [
+            "messages",
+            "messages"
+          ]
+        },
+        "properties": {
+          "messages": {
+            "description": "Error messages about what the error could be.",
+            "items": {
+              "description": "An error message, indicating what went wrong.",
+              "type": "string"
+            },
+            "title": "messages",
+            "type": "array"
+          }
+        },
+        "title": "PostApiSubscriptionError",
+        "type": "object"
+      },
+      "PostApiSubscriptionRequest": {
+        "description": "Request to update API settings. Fields which are omitted will be ignored.",
+        "example": {
+          "recharge_settings": {
+            "minimum_balance_threshold": {
+              "amount": 1050,
+              "currency_code": "USD"
+            },
+            "top_up_balance": {
+              "amount": 1050,
+              "currency_code": "USD"
+            }
+          }
+        },
+        "properties": {
+          "recharge_settings": {
+            "description": "The current recharge settings for the API subscription.",
+            "example": {
+              "minimum_balance_threshold": {
+                "amount": 1050,
+                "currency_code": "USD"
+              },
+              "top_up_balance": {
+                "amount": 1050,
+                "currency_code": "USD"
+              }
+            },
+            "properties": {
+              "top_up_balance": {
+                "description": "Represents a price.",
+                "example": {
+                  "amount": 1050,
+                  "currency_code": "USD"
+                },
+                "properties": {
+                  "currency_code": {
+                    "description": "The ISO 4217 currency code for the price object.",
+                    "example": "USD",
+                    "title": "currency_code",
+                    "type": "string"
+                  },
+                  "amount": {
+                    "description": "The amount of the currency in the common denomination. For example, in USD this is cents.",
+                    "example": 1050,
+                    "title": "amount",
+                    "type": "number"
+                  }
+                },
+                "title": "Price",
+                "type": "object"
+              },
+              "minimum_balance_threshold": {
+                "description": "Represents a price.",
+                "example": {
+                  "amount": 1050,
+                  "currency_code": "USD"
+                },
+                "properties": {
+                  "currency_code": {
+                    "description": "The ISO 4217 currency code for the price object.",
+                    "example": "USD",
+                    "title": "currency_code",
+                    "type": "string"
+                  },
+                  "amount": {
+                    "description": "The amount of the currency in the common denomination. For example, in USD this is cents.",
+                    "example": 1050,
+                    "title": "amount",
+                    "type": "number"
+                  }
+                },
+                "title": "Price",
+                "type": "object"
+              }
+            },
+            "required": [
+              "minimum_balance_threshold",
+              "top_up_balance"
+            ],
+            "title": "RechargeSettings",
+            "type": "object"
+          }
+        },
+        "title": "PostApiSubscriptionRequest",
+        "type": "object"
+      },
+      "GetApiKeysResponse": {
+        "example": {
+          "current_api_keys": [
+            {
+              "creation_time": "2000-01-23T04:56:07.000Z",
+              "redacted_api_key": "vkpDja",
+              "api_key_id": "JRPVD7jWR1aTBYiJ0UFVOg=="
+            },
+            {
+              "creation_time": "2000-01-23T04:56:07.000Z",
+              "redacted_api_key": "vkpDja",
+              "api_key_id": "JRPVD7jWR1aTBYiJ0UFVOg=="
+            }
+          ]
+        },
+        "properties": {
+          "current_api_keys": {
+            "default": [],
+            "description": "The current API keys that are active. Only returns redacted keys.",
+            "items": {
+              "description": "A representation of an API key that does not contain the full key.",
+              "example": {
+                "creation_time": "2000-01-23T04:56:07.000Z",
+                "redacted_api_key": "vkpDja",
+                "api_key_id": "JRPVD7jWR1aTBYiJ0UFVOg=="
+              },
+              "properties": {
+                "redacted_api_key": {
+                  "description": "A redacted text snippet of the API key. Contains the first 4 characters of the API key",
+                  "example": "vkpDja",
+                  "title": "redacted_api_key",
+                  "type": "string"
+                },
+                "creation_time": {
+                  "description": "The time at which the key was created",
+                  "format": "date-time",
+                  "title": "creation_time",
+                  "type": "string"
+                },
+                "api_key_id": {
+                  "description": "A URL safe base64 encoded UUID",
+                  "example": "JRPVD7jWR1aTBYiJ0UFVOg==",
+                  "title": "api_key_id",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "api_key_id",
+                "creation_time",
+                "redacted_api_key"
+              ],
+              "title": "RedactedApiKey",
+              "type": "object"
+            },
+            "title": "current_api_keys",
+            "type": "array"
+          }
+        },
+        "title": "GetApiKeysResponse",
+        "type": "object"
+      },
+      "RedactedApiKey": {
+        "description": "A representation of an API key that does not contain the full key.",
+        "example": {
+          "creation_time": "2000-01-23T04:56:07.000Z",
+          "redacted_api_key": "vkpDja",
+          "api_key_id": "JRPVD7jWR1aTBYiJ0UFVOg=="
+        },
+        "properties": {
+          "redacted_api_key": {
+            "description": "A redacted text snippet of the API key. Contains the first 4 characters of the API key",
+            "example": "vkpDja",
+            "title": "redacted_api_key",
+            "type": "string"
+          },
+          "creation_time": {
+            "description": "The time at which the key was created",
+            "format": "date-time",
+            "title": "creation_time",
+            "type": "string"
+          },
+          "api_key_id": {
+            "description": "A URL safe base64 encoded UUID",
+            "example": "JRPVD7jWR1aTBYiJ0UFVOg==",
+            "title": "api_key_id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "api_key_id",
+          "creation_time",
+          "redacted_api_key"
+        ],
+        "title": "RedactedApiKey",
+        "type": "object"
+      },
+      "PostApiKeyResponse": {
+        "example": {
+          "api_key": "vkpDjaKdMNR8QJ83GjfNvFZJbnoi65XUp70MgZNtA2H9XE8yfDnmr_6BaRyQkF9hnJzu6mUPRLBmqlnZMwetJA",
+          "api_key_id": "JRPVD7jWR1aTBYiJ0UFVOg=="
+        },
+        "properties": {
+          "api_key": {
+            "description": "The API key to use when making authenticated requests with the API. This key will only be shown once.",
+            "example": "vkpDjaKdMNR8QJ83GjfNvFZJbnoi65XUp70MgZNtA2H9XE8yfDnmr_6BaRyQkF9hnJzu6mUPRLBmqlnZMwetJA",
+            "title": "api_key",
+            "type": "string"
+          },
+          "api_key_id": {
+            "description": "The ID of the API key. A URL safe base64 encoded UUID",
+            "example": "JRPVD7jWR1aTBYiJ0UFVOg==",
+            "title": "api_key_id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "api_key",
+          "api_key_id"
+        ],
+        "title": "PostApiKeyResponse",
+        "type": "object"
+      },
+      "ManageApiStripeSubscriptionResponse": {
+        "example": {
+          "stripe_subscription_url": "stripe_subscription_url",
+          "stripe_billing_url": "stripe_billing_url"
+        },
+        "properties": {
+          "stripe_subscription_url": {
+            "description": "The URL for the user to checkout the Stripe subscription plan.",
+            "title": "stripe_subscription_url",
+            "type": "string"
+          },
+          "stripe_billing_url": {
+            "deprecated": true,
+            "description": "DEPRECATED. The URL for the user to manage the existing Stripe subscription plan. Get this from ManageApiSubscriptionResponse instead.",
+            "title": "stripe_billing_url",
+            "type": "string"
+          }
+        },
+        "title": "ManageApiStripeSubscriptionResponse",
+        "type": "object"
+      },
+      "GetApiTermsResponse": {
+        "example": {
+          "api_terms": {
+            "terms_url": "terms_url",
+            "terms_id": "terms_id"
+          }
+        },
+        "properties": {
+          "api_terms": {
+            "example": {
+              "terms_url": "terms_url",
+              "terms_id": "terms_id"
+            },
+            "properties": {
+              "terms_id": {
+                "description": "The ID of the terms.",
+                "title": "terms_id",
+                "type": "string"
+              },
+              "terms_url": {
+                "description": "The URL where the terms are hosted.",
+                "title": "terms_url",
+                "type": "string"
+              }
+            },
+            "required": [
+              "terms_id",
+              "terms_url"
+            ],
+            "title": "ApiTerms",
+            "type": "object"
+          }
+        },
+        "required": [
+          "api_terms"
+        ],
+        "title": "GetApiTermsResponse",
+        "type": "object"
+      },
+      "ApiTerms": {
+        "example": {
+          "terms_url": "terms_url",
+          "terms_id": "terms_id"
+        },
+        "properties": {
+          "terms_id": {
+            "description": "The ID of the terms.",
+            "title": "terms_id",
+            "type": "string"
+          },
+          "terms_url": {
+            "description": "The URL where the terms are hosted.",
+            "title": "terms_url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "terms_id",
+          "terms_url"
+        ],
+        "title": "ApiTerms",
+        "type": "object"
+      },
+      "PostApiTermsRequest": {
+        "example": {
+          "terms_id": "TOS_2024_04_20"
+        },
+        "properties": {
+          "terms_id": {
+            "description": "The ID of the terms which are being accepted.",
+            "example": "TOS_2024_04_20",
+            "title": "terms_id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "terms_id"
+        ],
+        "title": "PostApiTermsRequest",
+        "type": "object"
+      },
+      "Description": {
+        "example": {
+          "text": "A meticulously illustrated cat with striped patterns, sitting upright. The cat's eyes are a captivating shade of yellow, and it appears to be gazing intently at something. The background consists of abstract, swirling patterns in shades of black, white, and beige, creating an almost fluid or wavy appearance. The cat is positioned in the foreground, with the background elements fading into the distance, giving a sense of depth to the image."
+        },
+        "properties": {
+          "text": {
+            "description": "The generated description for the provided image.",
+            "example": "A meticulously illustrated cat with striped patterns, sitting upright. The cat's eyes are a captivating shade of yellow, and it appears to be gazing intently at something. The background consists of abstract, swirling patterns in shades of black, white, and beige, creating an almost fluid or wavy appearance. The cat is positioned in the foreground, with the background elements fading into the distance, giving a sense of depth to the image.",
+            "title": "text",
+            "type": "string"
+          }
+        },
+        "title": "Description",
+        "type": "object"
+      },
+      "AspectRatio": {
+        "description": "(Cannot be used in conjunction with resolution) The aspect ratio to use for image generation, which determines the image's resolution. Defaults to ASPECT_1_1.",
+        "enum": [
+          "ASPECT_10_16",
+          "ASPECT_16_10",
+          "ASPECT_9_16",
+          "ASPECT_16_9",
+          "ASPECT_3_2",
+          "ASPECT_2_3",
+          "ASPECT_4_3",
+          "ASPECT_3_4",
+          "ASPECT_1_1",
+          "ASPECT_1_3",
+          "ASPECT_3_1"
+        ],
+        "example": "ASPECT_10_16",
+        "externalDocs": {
+          "url": "https://docs.ideogram.ai/usage/advanced-prompting/aspect-ratios"
+        },
+        "title": "AspectRatio",
+        "type": "string"
+      },
+      "MagicPromptOption": {
+        "default": "AUTO",
+        "description": "Determine if MagicPrompt should be used in generating the request or not",
+        "enum": [
+          "AUTO",
+          "ON",
+          "OFF"
+        ],
+        "example": "ON",
+        "externalDocs": {
+          "url": "https://docs.ideogram.ai/using-ideogram/ideogram-features/magic-prompt"
+        },
+        "title": "MagicPromptOption",
+        "type": "string"
+      },
+      "Seed": {
+        "example": 12345,
+        "maximum": 2147483647,
+        "minimum": 0,
+        "title": "Seed",
+        "type": "integer"
+      },
+      "StyleType": {
+        "description": "The style type to generate with; this is only applicable for models V_2 and above and should not be specified for model versions V_1.",
+        "enum": [
+          "GENERAL",
+          "REALISTIC",
+          "DESIGN",
+          "RENDER_3D",
+          "ANIME"
+        ],
+        "example": "REALISTIC",
+        "title": "StyleType",
+        "type": "string"
+      },
+      "Resolution": {
+        "description": "(For model_version for 2.0 only, cannot be used in conjunction with aspect_ratio) The resolution to use for image generation, represented in width x height. If not specified, defaults to using aspect_ratio.",
+        "enum": [
+          "RESOLUTION_512_1536",
+          "RESOLUTION_576_1408",
+          "RESOLUTION_576_1472",
+          "RESOLUTION_576_1536",
+          "RESOLUTION_640_1024",
+          "RESOLUTION_640_1344",
+          "RESOLUTION_640_1408",
+          "RESOLUTION_640_1472",
+          "RESOLUTION_640_1536",
+          "RESOLUTION_704_1152",
+          "RESOLUTION_704_1216",
+          "RESOLUTION_704_1280",
+          "RESOLUTION_704_1344",
+          "RESOLUTION_704_1408",
+          "RESOLUTION_704_1472",
+          "RESOLUTION_720_1280",
+          "RESOLUTION_736_1312",
+          "RESOLUTION_768_1024",
+          "RESOLUTION_768_1088",
+          "RESOLUTION_768_1152",
+          "RESOLUTION_768_1216",
+          "RESOLUTION_768_1232",
+          "RESOLUTION_768_1280",
+          "RESOLUTION_768_1344",
+          "RESOLUTION_832_960",
+          "RESOLUTION_832_1024",
+          "RESOLUTION_832_1088",
+          "RESOLUTION_832_1152",
+          "RESOLUTION_832_1216",
+          "RESOLUTION_832_1248",
+          "RESOLUTION_864_1152",
+          "RESOLUTION_896_960",
+          "RESOLUTION_896_1024",
+          "RESOLUTION_896_1088",
+          "RESOLUTION_896_1120",
+          "RESOLUTION_896_1152",
+          "RESOLUTION_960_832",
+          "RESOLUTION_960_896",
+          "RESOLUTION_960_1024",
+          "RESOLUTION_960_1088",
+          "RESOLUTION_1024_640",
+          "RESOLUTION_1024_768",
+          "RESOLUTION_1024_832",
+          "RESOLUTION_1024_896",
+          "RESOLUTION_1024_960",
+          "RESOLUTION_1024_1024",
+          "RESOLUTION_1088_768",
+          "RESOLUTION_1088_832",
+          "RESOLUTION_1088_896",
+          "RESOLUTION_1088_960",
+          "RESOLUTION_1120_896",
+          "RESOLUTION_1152_704",
+          "RESOLUTION_1152_768",
+          "RESOLUTION_1152_832",
+          "RESOLUTION_1152_864",
+          "RESOLUTION_1152_896",
+          "RESOLUTION_1216_704",
+          "RESOLUTION_1216_768",
+          "RESOLUTION_1216_832",
+          "RESOLUTION_1232_768",
+          "RESOLUTION_1248_832",
+          "RESOLUTION_1280_704",
+          "RESOLUTION_1280_720",
+          "RESOLUTION_1280_768",
+          "RESOLUTION_1280_800",
+          "RESOLUTION_1312_736",
+          "RESOLUTION_1344_640",
+          "RESOLUTION_1344_704",
+          "RESOLUTION_1344_768",
+          "RESOLUTION_1408_576",
+          "RESOLUTION_1408_640",
+          "RESOLUTION_1408_704",
+          "RESOLUTION_1472_576",
+          "RESOLUTION_1472_640",
+          "RESOLUTION_1472_704",
+          "RESOLUTION_1536_512",
+          "RESOLUTION_1536_576",
+          "RESOLUTION_1536_640"
+        ],
+        "example": "RESOLUTION_1024_1024",
+        "title": "Resolution",
+        "type": "string"
+      },
+      "Price": {
+        "description": "Represents a price.",
+        "example": {
+          "amount": 1050,
+          "currency_code": "USD"
+        },
+        "properties": {
+          "currency_code": {
+            "description": "The ISO 4217 currency code for the price object.",
+            "example": "USD",
+            "title": "currency_code",
+            "type": "string"
+          },
+          "amount": {
+            "description": "The amount of the currency in the common denomination. For example, in USD this is cents.",
+            "example": 1050,
+            "title": "amount",
+            "type": "number"
+          }
+        },
+        "title": "Price",
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "description": "API key for access control. Use in the header with the name \\\"Api-Key\\\"",
+        "in": "header",
+        "name": "Api-Key",
+        "type": "apiKey",
+        "x-apikeyInfoFunc": "external_api.generated.openapi.controllers.security_controller.info_from_ApiKeyAuth"
+      },
+      "BearerAuth": {
+        "bearerFormat": "JWT",
+        "scheme": "bearer",
+        "type": "http",
+        "x-bearerInfoFunc": "external_api.generated.openapi.controllers.security_controller.info_from_BearerAuth"
+      }
+    }
+  }
+}

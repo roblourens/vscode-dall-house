@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "apis": [
+    {
+      "identifier": "ideogram",
+      "source": "@ideogram/v1.0#s9822m04148te",
+      "integrity": "sha512-uc1GkMHedC74eBDSCmP8GzZILe5/PL29C9bTGKCQwiWCIpUWyRGVVEFsbV7AsvUPs+obOG41q9tCFbdRss5pZw==",
+      "installerVersion": "6.1.2"
+    }
+  ]
+}

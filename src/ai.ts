@@ -8,6 +8,7 @@ import * as path from 'path';
 import { downloadFile } from './utils';
 import { fetchAiImageFlux } from './flux';
 import OpenAI from 'openai';
+import { fetchAiImageIdeogram } from './ideogram';
 
 export interface Image {
     b64_json?: string;
@@ -21,10 +22,13 @@ export async function generateAndDownloadAiImageWithTextCheck(extContext: vscode
     const tmpFilePath = tempFileWithoutExtension + '.png';
 
     let image: Image;
-    if (getImageModel() === 'dall-e') {
+    const model = getImageModel();
+    if (model === 'dall-e') {
         image = await generateAndDownloadAiImageWithTextCheckDallE(extContext, imageGenPrompt, requireText, retryCount, outputChannel, optsOverride);
-    } else {
+    } else if (model === 'flux') {
         image = await fetchAiImageFlux(extContext, imageGenPrompt);
+    } else {
+        image = await fetchAiImageIdeogram(extContext, imageGenPrompt);
     }
 
 
@@ -37,10 +41,13 @@ export async function generateAndDownloadAiImage(extContext: vscode.ExtensionCon
     const tmpTextFilePath = tmpFilePath + '.txt';
 
     let image: Image;
-    if (getImageModel() === 'dall-e') {
+    const model = getImageModel();
+    if (model === 'dall-e') {
         image = await fetchAiImageDallE(extContext, imageGenPrompt, optsOverride);
-    } else {
+    } else if (model === 'flux') {
         image = await fetchAiImageFlux(extContext, imageGenPrompt);
+    } else {
+        image = await fetchAiImageIdeogram(extContext, imageGenPrompt);
     }
 
     outputChannel.appendLine('    Revised prompt: ' + image.revised_prompt);

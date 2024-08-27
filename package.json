@@ -177,7 +177,8 @@
           "type": "string",
           "enum": [
             "dall-e",
-            "flux"
+            "flux",
+            "ideogram"
           ],
           "description": "The model to use for generating images.",
           "default": "dall-e"
@@ -235,6 +236,7 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
+    "@api/ideogram": "file:.api/apis/ideogram",
     "@types/mocha": "^10.0.3",
     "@types/node": "18.x",
     "@typescript-eslint/eslint-plugin": "^6.9.0",
