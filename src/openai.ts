@@ -6,13 +6,9 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import { downloadFile } from './utils';
 
-export async function generateAndDownloadAiImageWithTextCheck(extContext: vscode.ExtensionContext, imageGenPrompt: string, requireText: string, retryCount: number, outputChannel: vscode.OutputChannel, optsOverride?: Partial<OpenAI.ImageGenerateParams>): Promise<{ localPath: string, image: OpenAI.Image }> {
-    const randomFileName = crypto.randomBytes(20).toString('hex');
-    const tempFileWithoutExtension = path.join(os.tmpdir(), 'dall-house', randomFileName);
-    const tmpFilePath = tempFileWithoutExtension + '.png';
-
+export async function generateAndDownloadAiImageWithTextCheckDallE(extContext: vscode.ExtensionContext, imageGenPrompt: string, requireText: string, retryCount: number, outputChannel: vscode.OutputChannel, optsOverride?: Partial<OpenAI.ImageGenerateParams>): Promise<OpenAI.Image> {
     const fetchAndLog = async () => {
-        const image = await fetchAiImage(extContext, imageGenPrompt, optsOverride);
+        const image = await fetchAiImageDallE(extContext, imageGenPrompt, optsOverride);
         outputChannel.appendLine('    Revised prompt: ' + image.revised_prompt);
         outputChannel.appendLine(`    URL: ${image.url}`);
         return image;
@@ -33,34 +29,7 @@ export async function generateAndDownloadAiImageWithTextCheck(extContext: vscode
         }
     }
 
-    await downloadFile(image.url!, tmpFilePath);
-    return { localPath: tmpFilePath, image };
-}
-
-function getCacheImagePath(key: string): string {
-    return path.join(os.tmpdir(), 'dall-house', key) + '.png';
-}
-
-export async function getCachedImageForKey(key: string): Promise<undefined | { localPath: string, image: OpenAI.Image, revisedPrompt: string }> {
-    const tmpFilePath = getCacheImagePath(key);
-    const tmpTextFilePath = tmpFilePath + '.txt';
-    if (await exists(tmpFilePath) && await exists(tmpTextFilePath)) {
-        const revisedPrompt = await fs.promises.readFile(tmpTextFilePath, 'utf-8');
-        return { localPath: tmpFilePath, image: { url: tmpFilePath }, revisedPrompt };
-    }
-}
-
-export async function generateAndDownloadAiImage(extContext: vscode.ExtensionContext, imageGenPrompt: string, tmpFileName: string, isForce: boolean, outputChannel: vscode.OutputChannel, optsOverride?: Partial<OpenAI.ImageGenerateParams>): Promise<{ localPath: string, image: OpenAI.Image, revisedPrompt: string }> {
-    const tmpFilePath = getCacheImagePath(tmpFileName);
-    const tmpTextFilePath = tmpFilePath + '.txt';
-
-    const image = await fetchAiImage(extContext, imageGenPrompt, optsOverride);
-    outputChannel.appendLine('    Revised prompt: ' + image.revised_prompt);
-    outputChannel.appendLine(`    URL: ${image.url}`);
-    await downloadFile(image.url!, tmpFilePath);
-    await fs.promises.writeFile(tmpTextFilePath, image.revised_prompt || '');
-
-    return { localPath: tmpFilePath, image, revisedPrompt: image.revised_prompt || '' };
+    return image;
 }
 
 export async function checkForTextInImage(extContext: vscode.ExtensionContext, imageUrl: string, text: string, outputChannel: vscode.OutputChannel): Promise<boolean> {
@@ -91,7 +60,7 @@ export async function checkForTextInImage(extContext: vscode.ExtensionContext, i
     return textResponse?.toLowerCase().includes('yes') ?? true;
 }
 
-async function fetchAiImage(extContext: vscode.ExtensionContext, imageGenPrompt: string, optsOverride?: Partial<OpenAI.ImageGenerateParams>): Promise<OpenAI.Image> {
+export async function fetchAiImageDallE(extContext: vscode.ExtensionContext, imageGenPrompt: string, optsOverride?: Partial<OpenAI.ImageGenerateParams>): Promise<OpenAI.Image> {
     const key = await getUserAiKey(extContext);
     if (!key) {
         throw new Error('Missing OpenAI API key');
@@ -145,13 +114,4 @@ export async function textRequest(extContext: vscode.ExtensionContext, messages:
     const textResponse = response.choices[0].message.content?.replace(/^"|"$/g, '');
     outputChannel.appendLine(`    Response: ${textResponse}`);
     return textResponse ?? '';
-}
-
-async function exists(file: string): Promise<boolean> {
-    try {
-        await fs.promises.access(file);
-        return true;
-    } catch (error) {
-        return false;
-    }
 }

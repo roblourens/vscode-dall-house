@@ -1,9 +1,9 @@
-import * as vscode from 'vscode';
-import * as os from 'os';
-import { generateAndDownloadAiImage, generateAndDownloadAiImageWithTextCheck, getCachedImageForKey, textRequest } from './openai';
 import OpenAI from 'openai';
+import * as os from 'os';
+import * as vscode from 'vscode';
 import { API as GitAPI, GitExtension, Repository } from './git';
-import { getArtStyleAndFeelPart, getCuteArtStyleAndFeelPart } from './promptUtils';
+import { textRequest } from './openai';
+import { generateAndDownloadAiImage, getCachedImageForKey } from './ai';
 
 interface IDisplayedImageData {
 	imagePath: string;
@@ -185,7 +185,7 @@ export class GitBranchWebviewProvider implements vscode.WebviewViewProvider {
 
 		// Require that the user's phrase is also visible as written text somewhere in the image.
 		const branchNoDash = branchName.replace(/-/g, ' ');
-		const extraDetailMode = vscode.workspace.getConfiguration('dallHouse.branchCritter').get<string>('extraDetailMode');
+		const extraDetailMode = true;
 		let prompt: string;
 		if (extraDetailMode) {
 			const askForStoryPrompt = `You are a creative children's book author. The user will give a short phrase that describes an animal, and you must write a short silly explanation for why the animal is described that way. For example, if the user's phrase is "dizzy koala", you could reply "the koala is dizzy because it is spinning on a merry-go-round". Or if the phrase is "curious carp" you could reply "the carp is curious about a fishing hook that was lowered into the water in front of it". If the phrase is "mad rooster" you could reply "the rooster is mad because another rooster is stealing its food". You get the idea. Reply with this short one-sentence explanation and no other text.`;
@@ -277,6 +277,7 @@ function getNonce() {
 const artStyles = [
 	'A cartoon, colorful and cute with a background showing its environment',
 	'A cute 3d render of the animal',
+	'A cartoonish 3d render, disney/pixar style',
 	'A magazine-quality real photograph by a nature photographer',
 	''
 ];

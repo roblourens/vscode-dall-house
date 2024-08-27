@@ -1,8 +1,9 @@
 import * as vscode from 'vscode';
 import * as os from 'os';
-import { generateAndDownloadAiImageWithTextCheck } from './openai';
+import { generateAndDownloadAiImageWithTextCheckDallE, textRequest } from './openai';
 import OpenAI from 'openai';
 import { getArtStyleAndFeelPart } from './promptUtils';
+import { generateAndDownloadAiImageWithTextCheck } from './ai';
 
 const refreshesBeforeWait = 1;
 
@@ -100,7 +101,8 @@ export class DallClockWebviewProvider implements vscode.WebviewViewProvider {
 		try {
 			this._isRefreshing = true;
 			vscode.commands.executeCommand('setContext', 'dall-clock.refreshing', true);
-			const prompt = getPrompt();
+			const prompt = await getPrompt(this._extensionContext, this._outputChannel);
+			// const prompt = { requiredString: '', fullPrompt: await textRequest(this._extensionContext, [{ role: 'user', content: 'Write a creative prompt for an image generation AI. It should describe a unique scene with a clear subject. It should have a distinct mood/atmosphere. Give enough detail for the AI to create an interesting image.' }], this._outputChannel) };
 			this._outputChannel.appendLine(`*Prompt: ${prompt.fullPrompt}`);
 			const quality = vscode.workspace.getConfiguration('dallHouse').get<OpenAI.ImageGenerateParams['quality']>('quality');
 			const size = vscode.workspace.getConfiguration('dallHouse').get<OpenAI.ImageGenerateParams['size']>('size');
@@ -165,7 +167,7 @@ function getNonce() {
 	return text;
 }
 
-function getPrompt(): { fullPrompt: string, requiredString: string } {
+async function getPrompt(extensionContext: vscode.ExtensionContext, outputChannel: vscode.OutputChannel): Promise<{ fullPrompt: string; requiredString: string; }> {
 	const location = vscode.workspace.getConfiguration('dallHouse.clock').get('location', 'Seattle, WA');
 	const date = new Date();
 	date.setSeconds(date.getSeconds() + 30); // Add 30 seconds because it takes so damn long to update the image
@@ -180,15 +182,54 @@ function getPrompt(): { fullPrompt: string, requiredString: string } {
 	const timeWords = getTimeWordsPart()
 		.replace('{time}', `"${time}"`)
 		.replace('{location}', `"${location}"`);
-	const scene = getScenePart().replace('{location}', `"${location}"`);
-	if (location) {
+
+	const scenePrompt = vscode.workspace.getConfiguration('dallHouse.clock').get<string>('scenePrompt');
+	if (scenePrompt) {
 		return {
-			fullPrompt: `${timeWords} This is just text, it does not represent a time. The text is obvious and readable. There is no other text anywhere in the scene. ${scene} It is ${timeOfDay}. ${getArtStyleAndFeelPart()}`,
+			fullPrompt: `${timeWords} ${scenePrompt}`,
 			requiredString: timeWithoutAmPm
 		};
-	} else {
+	}
+
+	const fullPrompt = vscode.workspace.getConfiguration('dallHouse.clock').get<string>('fullPrompt');
+	if (fullPrompt) {
 		return {
-			fullPrompt: `A digital clock which reads "${time}".`,
+			fullPrompt,
+			requiredString: ''
+		};
+	}
+
+	const promptType = pickRandom('prompts2', 'scene', 'generated');
+	if (promptType === 'prompts2') {
+		const prompt2 = pickRandom(...prompts2);
+		return {
+			fullPrompt: prompt2({ timeOfDay, time }),
+			requiredString: timeWithoutAmPm
+		};
+	} else if (promptType === 'scene') {
+		const scene = getScenePart().replace('{location}', `"${location}"`);
+		if (location) {
+			return {
+				fullPrompt: `${timeWords} This is just text, it does not represent a time. The text is obvious and readable. There is no other text anywhere in the scene. ${scene} It is ${timeOfDay}. ${getArtStyleAndFeelPart()}`,
+				requiredString: timeWithoutAmPm
+			};
+		} else {
+			return {
+				fullPrompt: `A digital clock which reads "${time}".`,
+				requiredString: timeWithoutAmPm
+			};
+		}
+	} else {
+		const promptPrompt = `Write a creative prompt for an image generation AI. It should describe a unique scene with a clear subject. It should have a distinct mood/atmosphere. Give enough detail for the AI to create an interesting image. Do not give the prompt a title/name. 
+Here's some inspiration: ${getSceneForPromptGeneration()}.
+${roll(4) ? `Season: ${randomSeason()}. ` : ''}
+${roll(4) ? getArtStyleAndFeelPart() : ''}
+${roll(4) ? 'It is ' + timeOfDay : ''}
+`;
+		const prompt = 'VERY IMPORTANT, DO NOT IGNORE: ' + timeWords + ' Apply this to the image for the following prompt\n\n' + await textRequest(extensionContext, [{ role: 'user', content: promptPrompt }], outputChannel);
+		// `\n\nVERY IMPORTANT, DO NOT IGNORE: ${timeWords}`;
+		return {
+			fullPrompt: prompt,
 			requiredString: timeWithoutAmPm
 		};
 	}
@@ -217,8 +258,9 @@ const timeWordsOptions = [
 	'There is a digital clock in the foreground which shows the _exact_ text {time} and no other text.',
 	'There is a nixie tube clock in the foreground which shows the _exact_ text {time} and no other text.',
 	'The text {time} is overlayed on the image in large font. There is no other text.',
-	'Some object in the scene has the exact text {time} written on it in large font.', // This should be more specific
-	'A person from {location} is holding a sign with the exact text {time} written on it in large font.',
+	'Some object in the scene has the exact text {time} painted on it in large brushstrokes.', // This should be more specific
+	'The text {time} is painted over it in big, white brush strokes with visible texture.',
+	'A person from {location} is holding a sign with the exact text {time} handwritten on it in large font. They are facing the viewer and the sign does not block their face.',
 	'There is a large sign in the foreground which shows the exact text {time} and no other text.',
 ];
 
@@ -238,4 +280,61 @@ function getTimeOfDay(d: Date) {
 	} else {
 		return 'evening';
 	}
+}
+
+function getSceneForPromptGeneration(): string {
+	return pickRandom(
+		'futuristic cityscape',
+		'medieval',
+		'jungle',
+		'underwater',
+		'steampunk',
+		'alien planet',
+		'post-apocalyptic',
+		'cyberpunk',
+		'remote desert',
+		'cute animal',
+		'mythical creature',
+		'robotics lab',
+		'videogame characters',
+		'ancient mysteries',
+		'retro travel poster',
+		'huge library',
+		'city in the clouds',
+		'space war',
+		'the 90s',
+	);
+}
+
+interface IPromptContext {
+	timeOfDay: string;
+	time: string;
+}
+
+const prompts2 = [
+	(ctx: IPromptContext) => `A ${pickRandom('girl', 'boy', 'horse', 'cyborg', 'buffalo', 'star wars at-at')} walking through a field. Clouds above spell out "${ctx.time}". ${includeOrNot('Ethereal trees,')} ${includeOrNot('dark yellow and azure, majestic,')} sweeping landscape, ${pickRandom('photorealistic', 'oil painting', 'watercolor')}.`,
+	(ctx: IPromptContext) => `A cartoonish 3d rendering of a ${pickRandom('hot-air balloon', 'castle', 'dog', 'retro alarm clock', 'laptop', 'ship')}. It has the text "${ctx.time}" on its side in large letters. Disney/pixar style, colorful, fun.`,
+	(ctx: IPromptContext) => `Many programmers hard at work in a busy modern tech office. It is ${ctx.timeOfDay}. The office has large windows that look out over ${pickRandom('a futuristic cityscape', 'a lush jungle valley', 'a modern city')}. The digital clock on the wall shows the text "${ctx.time}".`,
+	(ctx: IPromptContext) => `A colorful abstract image showing swirls of color. Fractal explosions of light and texture. The text "${ctx.time}" appears in the center of the image. ${pickRandom('digital rendering', 'psychedelic oil painting', '')}`,
+	(ctx: IPromptContext) => `VERY IMPORTANT: The text "${ctx.time}" is written in the sky in large letters made of ${pickRandom('stars', 'clouds', 'sparks', 'magic', 'typography')}. A ${ctx.timeOfDay} view of a huge ${pickRandom('snow-capped', 'tree-covered', 'jungle', 'volcanic', 'desolate')} mountain. The mountain is ${pickRandom('round and smooth', 'steep and craggy', 'mysterious and unknowable', 'like mt rainier', 'like mt hood')}. A small campfire burns in the foreground near the foot of the mountain, and small figures are barely visible, illuminated by the fire. The difference in scale between the two is awe-inspiring. ${pickRandom('Telephoto lens, realistic photo', 'oil painting, impressionistic', 'watercolor, dreamy')}.`,
+];
+
+function pickRandom<T>(...arr: T[]): T {
+	return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function randomSeason() {
+	return pickRandom('spring', 'summer', 'fall', 'winter');
+}
+
+function includeOrNot(s: string) {
+	return pickRandom(s, '');
+}
+
+function randomBoolean() {
+	return pickRandom(true, false);
+}
+
+function roll(n: number) {
+	return Math.random() < (1 / n);
 }

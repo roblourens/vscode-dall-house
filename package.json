@@ -168,15 +168,19 @@
           "description": "If enabled, the text of the branch name will be included in the prompt.",
           "default": false
         },
-        "dallHouse.branchCritter.extraDetailMode": {
-          "type": "boolean",
-          "description": "Experimental. Makes extra GPT-4 calls to try to get an image that makes more sense and has a little story but sometimes the results are weird and it will cost just a little extra.",
-          "default": false
-        },
         "dallHouse.clock.location": {
           "type": "string",
           "description": "A free-form description of your location, like a city name.",
           "default": "Seattle, WA"
+        },
+        "dallHouse.imageModel": {
+          "type": "string",
+          "enum": [
+            "dall-e",
+            "flux"
+          ],
+          "description": "The model to use for generating images.",
+          "default": "dall-e"
         },
         "dallHouse.quality": {
           "type": "string",
@@ -246,6 +250,7 @@
   },
   "dependencies": {
     "@azure/openai": "^1.0.0-beta.12",
+    "@fal-ai/serverless-client": "^0.14.2",
     "openai": "^4.47.1"
   }
 }
