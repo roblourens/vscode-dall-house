@@ -3,13 +3,11 @@
   "displayName": "DALL · House",
   "publisher": "roblourens",
   "description": "Dall·E-powered toys for VS Code",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "engines": {
     "vscode": "^1.90.0"
   },
-  "extensionDependencies": [
-    "github.copilot-chat"
-  ],
+  "extensionDependencies": [ ],
   "activationEvents": [],
   "categories": [
     "Chat",
