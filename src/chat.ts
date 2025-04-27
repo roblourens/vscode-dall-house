@@ -53,8 +53,8 @@ async function getAiImage(extContext: vscode.ExtensionContext, imageGenPrompt: s
             size: '1024x1024',
             quality: getQuality(),
         });
-        resultUrl = imageGen.data[0].url!;
-        outputChannel.appendLine(`Rewritten to "${imageGen.data[0].revised_prompt}"`);
+        resultUrl = imageGen.data?.[0].url!;
+        outputChannel.appendLine(`Rewritten to "${imageGen.data?.[0].revised_prompt}"`);
     }
 
     outputChannel.appendLine(`Generated image URL: ${resultUrl}`);

@@ -1,12 +1,14 @@
-import * as crypto from 'crypto';
 import OpenAI from 'openai';
-import * as os from 'os';
-import * as fs from 'fs';
-import * as path from 'path';
 import * as vscode from 'vscode';
-import { downloadFile } from './utils';
 
-export async function generateAndDownloadAiImageWithTextCheckDallE(extContext: vscode.ExtensionContext, imageGenPrompt: string, requireText: string, retryCount: number, outputChannel: vscode.OutputChannel, optsOverride?: Partial<OpenAI.ImageGenerateParams>): Promise<OpenAI.Image> {
+export async function generateAndDownloadAiImageWithTextCheckDallE(
+    extContext: vscode.ExtensionContext,
+    imageGenPrompt: string,
+    requireText: string,
+    retryCount: number,
+    outputChannel: vscode.OutputChannel,
+    optsOverride?: Partial<OpenAI.ImageGenerateParams>
+): Promise<OpenAI.Image> {
     const fetchAndLog = async () => {
         const image = await fetchAiImageDallE(extContext, imageGenPrompt, optsOverride);
         outputChannel.appendLine('    Revised prompt: ' + image.revised_prompt);
@@ -76,7 +78,26 @@ export async function fetchAiImageDallE(extContext: vscode.ExtensionContext, ima
         quality: 'hd',
         ...optsOverride,
     });
-    return imageGen.data[0]!;
+    return imageGen.data?.[0]!;
+}
+
+export async function fetchAiImageGPTImage1(extContext: vscode.ExtensionContext, imageGenPrompt: string, optsOverride?: Partial<OpenAI.ImageGenerateParams>): Promise<OpenAI.Image> {
+    const key = await getUserAiKey(extContext);
+    if (!key) {
+        throw new Error('Missing OpenAI API key');
+    }
+
+    const openai = new OpenAI({ apiKey: key });
+    const imageGen = await openai.images.generate({
+        prompt: imageGenPrompt,
+        model: 'gpt-image-1',
+        n: 1,
+        size: '1024x1024',
+        ...optsOverride,
+        style: undefined,
+        quality: undefined,
+    });
+    return imageGen.data?.[0]!;
 }
 
 const keyName = 'openai.aiKey';

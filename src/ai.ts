@@ -1,14 +1,14 @@
+import * as crypto from 'crypto';
+import * as fs from 'fs';
+import OpenAI from 'openai';
+import * as os from 'os';
+import * as path from 'path';
 import * as vscode from 'vscode';
 import { getImageModel } from './config';
-import { fetchAiImageDallE, generateAndDownloadAiImageWithTextCheckDallE } from './openai';
-import * as crypto from 'crypto';
-import * as os from 'os';
-import * as fs from 'fs';
-import * as path from 'path';
-import { downloadFile } from './utils';
 import { fetchAiImageFlux } from './flux';
-import OpenAI from 'openai';
 import { fetchAiImageIdeogram } from './ideogram';
+import { fetchAiImageDallE, fetchAiImageGPTImage1, generateAndDownloadAiImageWithTextCheckDallE } from './openai';
+import { downloadFile } from './utils';
 
 export interface Image {
     b64_json?: string;
@@ -23,7 +23,9 @@ export async function generateAndDownloadAiImageWithTextCheck(extContext: vscode
 
     let image: Image;
     const model = getImageModel();
-    if (model === 'dall-e') {
+    if (model === 'gpt-image-1') {
+        image = await fetchAiImageGPTImage1(extContext, imageGenPrompt, optsOverride);
+    } else if (model === 'dall-e' || model === 'gpt-image-1') {
         image = await generateAndDownloadAiImageWithTextCheckDallE(extContext, imageGenPrompt, requireText, retryCount, outputChannel, optsOverride);
     } else if (model === 'flux') {
         image = await fetchAiImageFlux(extContext, imageGenPrompt);
@@ -31,8 +33,16 @@ export async function generateAndDownloadAiImageWithTextCheck(extContext: vscode
         image = await fetchAiImageIdeogram(extContext, imageGenPrompt);
     }
 
-
-    await downloadFile(image.url!, tmpFilePath);
+    if (image.url) {
+        await downloadFile(image.url!, tmpFilePath);
+    } else if (image.b64_json) {
+        const buffer = Buffer.from(image.b64_json, 'base64');
+        await fs.promises.mkdir(path.dirname(tmpFilePath), { recursive: true });
+        await fs.promises.writeFile(tmpFilePath, buffer);
+    } else {
+        throw new Error('No image URL or base64 data found in image response');
+    }
+    
     return { localPath: tmpFilePath, image };
 }
 
@@ -42,7 +52,9 @@ export async function generateAndDownloadAiImage(extContext: vscode.ExtensionCon
 
     let image: Image;
     const model = getImageModel();
-    if (model === 'dall-e') {
+    if (model === 'gpt-image-1') {
+        image = await fetchAiImageGPTImage1(extContext, imageGenPrompt, optsOverride);
+    } else if (model === 'dall-e') {
         image = await fetchAiImageDallE(extContext, imageGenPrompt, optsOverride);
     } else if (model === 'flux') {
         image = await fetchAiImageFlux(extContext, imageGenPrompt);
@@ -51,8 +63,16 @@ export async function generateAndDownloadAiImage(extContext: vscode.ExtensionCon
     }
 
     outputChannel.appendLine('    Revised prompt: ' + image.revised_prompt);
-    outputChannel.appendLine(`    URL: ${image.url}`);
-    await downloadFile(image.url!, tmpFilePath);
+    if (image.url) {
+        outputChannel.appendLine(`    URL: ${image.url}`);
+        await downloadFile(image.url!, tmpFilePath);
+    } else if (image.b64_json) {
+        const buffer = Buffer.from(image.b64_json, 'base64');
+        await fs.promises.mkdir(path.dirname(tmpFilePath), { recursive: true });
+        await fs.promises.writeFile(tmpFilePath, buffer);
+    } else {
+        throw new Error('No image URL or base64 data found in image response');
+    }
     await fs.promises.writeFile(tmpTextFilePath, image.revised_prompt || '');
 
     return { localPath: tmpFilePath, image, revisedPrompt: image.revised_prompt || '' };
