@@ -2,7 +2,7 @@
 
 This is an extension for the sophisticated, attractive, and intelligent user who wants to look at cool pictures while they use VS Code.
 
-> **NEW**: The Ideogram and Flux models are now supported. Set the `dallHouse.imageModel` setting, enter your API key when prompted, and try them out!
+> **NEW**: Nano Banana (Gemini 2.5 Flash Image) is now supported! Set the `dallHouse.imageModel` setting, enter your API key when prompted, and try it out! (For now an OpenAI API key is also required.)
 
 <p align="center">
   <img src="https://github.com/roblourens/vscode-dall-clock/blob/6768b235370a8db96243f95bfcec367a24382289/samples/branch-critter/7.png?raw=true">
