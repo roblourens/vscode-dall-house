@@ -3,7 +3,8 @@ import * as os from 'os';
 import { generateAndDownloadAiImageWithTextCheckDallE, textRequest } from './openai';
 import OpenAI from 'openai';
 import { getArtStyleAndFeelPart } from './promptUtils';
-import { generateAndDownloadAiImageWithTextCheck } from './ai';
+import { generateAndDownloadAiImage, generateAndDownloadAiImageWithTextCheck } from './ai';
+import { getImageModel } from './config';
 
 const refreshesBeforeWait = 1;
 
@@ -109,7 +110,9 @@ export class DallClockWebviewProvider implements vscode.WebviewViewProvider {
 			const style = vscode.workspace.getConfiguration('dallHouse').get<OpenAI.ImageGenerateParams['style']>('style');
 			const retryCount = vscode.workspace.getConfiguration('dallHouse.clock').get<number>('retryCount', 3);
 
-			const result = await generateAndDownloadAiImageWithTextCheck(this._extensionContext, prompt.fullPrompt, prompt.requiredString, retryCount, this._outputChannel, { quality, size, style });
+			const result = getImageModel() === 'gpt-image-1' ?
+				await generateAndDownloadAiImage(this._extensionContext, prompt.fullPrompt, prompt.requiredString, false, this._outputChannel, { quality, size, style }) :
+				await generateAndDownloadAiImageWithTextCheck(this._extensionContext, prompt.fullPrompt, prompt.requiredString, retryCount, this._outputChannel, { quality, size, style });
 			this._outputChannel.appendLine(`    Saved: ${result.localPath}`);
 			this._lastImage = result.localPath;
 			this._extensionContext.globalState.update('lastImage', result.localPath);
