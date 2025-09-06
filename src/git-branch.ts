@@ -1,9 +1,9 @@
 import OpenAI from 'openai';
 import * as os from 'os';
 import * as vscode from 'vscode';
+import { generateAndDownloadAiImage, getCachedImageForKey } from './ai';
 import { API as GitAPI, GitExtension, Repository } from './git';
 import { textRequest } from './openai';
-import { generateAndDownloadAiImage, getCachedImageForKey } from './ai';
 
 interface IDisplayedImageData {
 	imagePath: string;

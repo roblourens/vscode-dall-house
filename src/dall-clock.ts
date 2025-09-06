@@ -1,10 +1,10 @@
-import * as vscode from 'vscode';
-import * as os from 'os';
-import { generateAndDownloadAiImageWithTextCheckDallE, textRequest } from './openai';
 import OpenAI from 'openai';
-import { getArtStyleAndFeelPart } from './promptUtils';
+import * as os from 'os';
+import * as vscode from 'vscode';
 import { generateAndDownloadAiImage, generateAndDownloadAiImageWithTextCheck } from './ai';
 import { getImageModel } from './config';
+import { textRequest } from './openai';
+import { getArtStyleAndFeelPart } from './promptUtils';
 
 const refreshesBeforeWait = 1;
 

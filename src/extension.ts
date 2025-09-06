@@ -1,8 +1,9 @@
 import * as vscode from 'vscode';
+import { registerChatParticipant } from './chat';
 import { DallClockWebviewProvider } from './dall-clock';
+import { clearUserGeminiKey } from './gemini';
 import { GitBranchWebviewProvider } from './git-branch';
 import { clearUserAiKey } from './openai';
-import { registerChatParticipant } from './chat';
 
 export function activate(context: vscode.ExtensionContext) {
     const outputChannel = vscode.window.createOutputChannel('Dall House Log', { log: true });
@@ -19,8 +20,11 @@ export function activate(context: vscode.ExtensionContext) {
             clockProvider.open()),
         vscode.commands.registerCommand('dall-git-branch.refresh', async () =>
             gitBranchProvider.refresh(true)),
-        vscode.commands.registerCommand('dall-toys.clearKey', async () =>
-            clearUserAiKey(context)),
+        vscode.commands.registerCommand('dall-toys.clearKey', async () => {
+            clearUserAiKey(context);
+            clearUserGeminiKey(context);
+            vscode.window.showInformationMessage('All API keys cleared');
+        }),
         registerChatParticipant(context, outputChannel),
     );
 }

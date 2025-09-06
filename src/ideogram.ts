@@ -1,5 +1,5 @@
-import * as vscode from 'vscode';
 import ideogram from '@api/ideogram';
+import * as vscode from 'vscode';
 import { Image } from './ai';
 
 export async function fetchAiImageIdeogram(extContext: vscode.ExtensionContext, imageGenPrompt: string): Promise<Image> {

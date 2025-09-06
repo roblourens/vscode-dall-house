@@ -7,7 +7,7 @@
   "engines": {
     "vscode": "^1.90.0"
   },
-  "extensionDependencies": [ ],
+  "extensionDependencies": [],
   "activationEvents": [],
   "categories": [
     "Chat",
@@ -177,13 +177,15 @@
             "dall-e",
             "flux",
             "ideogram",
-            "gpt-image-1"
+            "gpt-image-1",
+            "gemini"
           ],
           "enumDescriptions": [
             "DALL·E 3",
             "Flux",
             "Ideogram",
-            "GPT-Image-1: Warning- expensive and slow"
+            "GPT-Image-1: Warning- expensive and slow",
+            "Google Gemini 2.5 Flash (Nano Banana)"
           ],
           "description": "The model to use for generating images.",
           "default": "dall-e"
@@ -258,6 +260,9 @@
     "@api/ideogram": "file:src/.api/apis/ideogram",
     "@azure/openai": "^1.0.0-beta.12",
     "@fal-ai/serverless-client": "^0.14.2",
-    "openai": "^4.96.0"
+    "@google/genai": "^1.17.0",
+    "bufferutil": "^4.0.9",
+    "openai": "^4.96.0",
+    "utf-8-validate": "^6.0.5"
   }
 }

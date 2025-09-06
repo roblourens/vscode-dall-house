@@ -1,5 +1,5 @@
-import * as vscode from 'vscode';
 import * as fal from "@fal-ai/serverless-client";
+import * as vscode from 'vscode';
 import { Image } from './ai';
 
 export async function fetchAiImageFlux(extContext: vscode.ExtensionContext, imageGenPrompt: string): Promise<Image> {
@@ -11,7 +11,7 @@ export async function fetchAiImageFlux(extContext: vscode.ExtensionContext, imag
     fal.config({
         credentials: key
     });
-    
+
     const result: any = await fal.subscribe("fal-ai/flux/dev", {
         input: {
             prompt: imageGenPrompt,

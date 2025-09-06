@@ -6,6 +6,7 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import { getImageModel } from './config';
 import { fetchAiImageFlux } from './flux';
+import { fetchAiImageGemini } from './gemini';
 import { fetchAiImageIdeogram } from './ideogram';
 import { fetchAiImageDallE, fetchAiImageGPTImage1, generateAndDownloadAiImageWithTextCheckDallE } from './openai';
 import { downloadFile } from './utils';
@@ -29,6 +30,8 @@ export async function generateAndDownloadAiImageWithTextCheck(extContext: vscode
         image = await generateAndDownloadAiImageWithTextCheckDallE(extContext, imageGenPrompt, requireText, retryCount, outputChannel, optsOverride);
     } else if (model === 'flux') {
         image = await fetchAiImageFlux(extContext, imageGenPrompt);
+    } else if (model === 'gemini') {
+        image = await fetchAiImageGemini(extContext, imageGenPrompt);
     } else {
         image = await fetchAiImageIdeogram(extContext, imageGenPrompt);
     }
@@ -42,7 +45,7 @@ export async function generateAndDownloadAiImageWithTextCheck(extContext: vscode
     } else {
         throw new Error('No image URL or base64 data found in image response');
     }
-    
+
     return { localPath: tmpFilePath, image };
 }
 
@@ -58,6 +61,8 @@ export async function generateAndDownloadAiImage(extContext: vscode.ExtensionCon
         image = await fetchAiImageDallE(extContext, imageGenPrompt, optsOverride);
     } else if (model === 'flux') {
         image = await fetchAiImageFlux(extContext, imageGenPrompt);
+    } else if (model === 'gemini') {
+        image = await fetchAiImageGemini(extContext, imageGenPrompt);
     } else {
         image = await fetchAiImageIdeogram(extContext, imageGenPrompt);
     }
